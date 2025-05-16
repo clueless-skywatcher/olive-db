@@ -27,8 +27,8 @@ public class OLNewPageTest {
         page.readPage(file.getTableFile(), new OLPageID(0), pageSize);
 
         assertEquals(page.getHeader().getSlotCounts(), 0);
-        assertEquals(page.getHeader().getFreeSpaceStart(), 0);
-        assertEquals(page.getHeader().getFreeSpaceEnd(), pageSize - 1);
+        assertEquals(page.getHeader().getFreeSpaceStart(), 16);
+        assertEquals(page.getHeader().getFreeSpaceEnd(), pageSize);
         assertEquals(page.getHeader().getTupleSize(), schema.getSize());
 
         db.dropDatabase();        
