@@ -1,6 +1,8 @@
 package io.db.olive;
 
+import io.db.olive.storage.OLDataFile;
 import io.db.olive.storage.OLStorageManager;
+import io.db.olive.tuples.OLTupleSchema;
 import lombok.Getter;
 
 public class OLDatabase {
@@ -13,7 +15,11 @@ public class OLDatabase {
         this.storageManager = new OLStorageManager(dbName, this.options);
     }
 
-    public void createTable(String tableName) throws Exception {
-        this.storageManager.startTableFile(tableName);
+    public OLDataFile createTable(String tableName, OLTupleSchema schema) throws Exception {
+        return this.storageManager.startTableFile(tableName, schema);
+    }
+
+    public void dropDatabase() throws Exception {
+        this.storageManager.dropDatabase();
     }
 }

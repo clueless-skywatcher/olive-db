@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import io.db.olive.OLOptions;
+import io.db.olive.tuples.OLTupleSchema;
 import lombok.Getter;
 
 public class OLStorageManager {
@@ -24,12 +25,23 @@ public class OLStorageManager {
         }       
     }
 
-    public OLDataFile startTableFile(String tableName) throws Exception {
+    public OLDataFile startTableFile(String tableName, OLTupleSchema schema) throws Exception {
         String tableFilePath = Paths.get(dataDir.getPath(), tableName + ".oltb").toString();
         File tableFile = new File(tableFilePath);
-        if (!tableFile.exists()) {
-            tableFile.createNewFile();
+        return new OLDataFile(tableFile, pageSize, schema.getSize());
+    }
+
+    public void dropDatabase() throws Exception {
+        deleteDir(dataDir);
+    }
+
+    private void deleteDir(File dir) throws Exception {
+        File[] contents = dir.listFiles();
+        if (contents != null) {
+            for (File file: contents) {
+                deleteDir(file);
+            }
         }
-        return new OLDataFile(tableFile, pageSize);
+        dir.delete();
     }
 }
