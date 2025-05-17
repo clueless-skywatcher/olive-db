@@ -45,7 +45,16 @@ public class OLDataFile {
 
         page.readPage(tableFile, new OLPageID(id), pageSize);
         return page;
-    }   
+    }  
+    
+    public void writePage(long id, byte[] contents) throws Exception {
+        if (contents.length == pageSize) {
+            RandomAccessFile raf = new RandomAccessFile(tableFile, "rws");
+            raf.seek(id * pageSize);
+            raf.write(contents);
+            raf.close();
+        }
+    }
     
     public long getPageCount() {
         return this.tableFile.length() / this.pageSize;
