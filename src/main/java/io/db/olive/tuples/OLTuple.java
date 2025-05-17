@@ -4,7 +4,11 @@ import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import io.db.olive.data.OLBoolean;
+import io.db.olive.data.OLCappedChar;
+import io.db.olive.data.OLInteger;
 import io.db.olive.data.OLSerializable;
+import io.db.olive.data.info.OLDataInfo;
 
 import lombok.Getter;
 
@@ -19,7 +23,7 @@ public class OLTuple {
 
     public void addField(String name, OLSerializable<?> field) {
         if (schema.contains(name)) {
-            if (field.getClass() != schema.getInfo(name).getDataType()) {
+            if (field.getDataType() != schema.getInfo(name).getDataType()) {
                 throw new IllegalArgumentException("Field " + name + " has wrong type");
             }
             fields.put(name, field);
@@ -47,5 +51,45 @@ public class OLTuple {
             sb.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(", ");
         }
         return sb.toString();
+    }
+
+    public static OLTuple deserialize(byte[] tupleBytes, OLTupleSchema schema) {
+        ByteBuffer buffer = ByteBuffer.wrap(tupleBytes);
+        byte isValid = buffer.get();
+        if (isValid == (byte) 0) {
+            return null;
+        }
+
+        OLTuple tuple = new OLTuple(schema);
+
+        for (String field: schema.getFields()) {
+            int offset = schema.getOffset(field);
+            OLDataInfo fieldType = schema.getInfo(field);
+            buffer.position(offset);
+
+            switch (fieldType.getDataType()) {
+                case "Integer":
+                    OLInteger val = new OLInteger(buffer.getInt());
+                    tuple.addField(field, val);
+                    break;
+                case "CappedChar":
+                    int length = buffer.getInt();
+                    byte[] charBytes = new byte[length];
+                    buffer.get(charBytes);
+                    OLCappedChar cappedChar = new OLCappedChar(
+                        new String(charBytes), fieldType.getMaxSize());
+                    tuple.addField(field, cappedChar);
+                    break;
+                case "Boolean":
+                    byte bool = buffer.get();
+                    OLBoolean boolObject = new OLBoolean(bool == (byte) 1);
+                    tuple.addField(field, boolObject);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return tuple;
     }
 }

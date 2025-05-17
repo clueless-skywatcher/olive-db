@@ -24,4 +24,9 @@ public class OLInteger implements OLSerializable<Integer> {
     public String toString() {
         return Integer.toString(value);
     }
+
+    @Override
+    public String getDataType() {
+        return "Integer";
+    }
 }

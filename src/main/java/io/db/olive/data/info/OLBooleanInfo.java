@@ -1,7 +1,5 @@
 package io.db.olive.data.info;
 
-import io.db.olive.data.OLBoolean;
-
 public class OLBooleanInfo implements OLDataInfo {
     @Override
     public int getMaxSize() {
@@ -9,7 +7,7 @@ public class OLBooleanInfo implements OLDataInfo {
     }
 
     @Override
-    public Class<?> getDataType() {
-        return OLBoolean.class;
+    public String getDataType() {
+        return "Boolean";
     }
 }

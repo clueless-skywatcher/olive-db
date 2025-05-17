@@ -5,5 +5,5 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public class OLPageID {
-    private @Getter int id;
+    private @Getter long id;
 }

@@ -18,7 +18,7 @@ public class OLPage {
     public void readPage(File file, OLPageID pageID, int pageSize) throws Exception {
         this.pageID = pageID;
         RandomAccessFile raf = new RandomAccessFile(file, "r");
-        raf.seek(pageID.getId());
+        raf.seek(pageID.getId() * pageSize);
         byte[] content = new byte[pageSize];
         raf.read(content);
         this.content = ByteBuffer.wrap(content);
@@ -106,7 +106,7 @@ public class OLPage {
             return null;
         }
 
-        content.position(OLPageHeader.getSlotArrayOffset());
+        content.position(OLPageHeader.getSlotArrayOffset() + slotId * Integer.BYTES);
         int offset = content.getInt();
         content.position(offset);
         

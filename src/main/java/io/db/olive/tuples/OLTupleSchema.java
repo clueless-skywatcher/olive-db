@@ -1,6 +1,8 @@
 package io.db.olive.tuples;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.db.olive.data.info.OLDataInfo;
@@ -31,5 +33,9 @@ public class OLTupleSchema {
 
     public int getMaxSize(String name) {
         return schema.get(name).getMaxSize();
+    }
+
+    public List<String> getFields() {
+        return new ArrayList<>(schema.keySet());
     }
 }

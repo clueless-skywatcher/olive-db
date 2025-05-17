@@ -23,5 +23,10 @@ public class OLBoolean implements OLSerializable<Boolean> {
     public String toString() {
         return value.toString();
     }
+
+    @Override
+    public String getDataType() {
+        return "Boolean";
+    }
     
 }

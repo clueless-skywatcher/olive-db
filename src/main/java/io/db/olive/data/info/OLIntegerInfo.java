@@ -1,7 +1,5 @@
 package io.db.olive.data.info;
 
-import io.db.olive.data.OLInteger;
-
 public class OLIntegerInfo implements OLDataInfo {
     @Override
     public int getMaxSize() {
@@ -9,7 +7,7 @@ public class OLIntegerInfo implements OLDataInfo {
     }
 
     @Override
-    public Class<?> getDataType() {
-        return OLInteger.class;
+    public String getDataType() {
+        return "Integer";
     }
 }

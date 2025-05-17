@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
+import io.db.olive.tuples.OLTuple;
 import lombok.Getter;
 
 public class OLDataFile {
@@ -36,13 +37,28 @@ public class OLDataFile {
         raf.close();
     }
 
-    public OLPage readPage(int id) throws Exception {
+    public OLPage readPage(long id) throws Exception {
         OLPage page = new OLPage();
+        if (getPageCount() <= id) {
+            addNewPage();
+        }
+
         page.readPage(tableFile, new OLPageID(id), pageSize);
         return page;
     }   
     
     public long getPageCount() {
         return this.tableFile.length() / this.pageSize;
+    }
+
+    public void insertTuple(OLTuple tuple) throws Exception {
+        OLPage lastPage = readPage(getPageCount() - 1);
+        byte[] tupleBytes = tuple.serialize();
+        if (!lastPage.insertTuple(tupleBytes)) {
+            addNewPage();
+            lastPage = readPage(getPageCount() - 1);
+            lastPage.insertTuple(tupleBytes);
+        }
+        lastPage.writePage(tableFile, pageSize);
     }
 }
