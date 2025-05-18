@@ -3,24 +3,27 @@ package io.db.olive.buffer;
 import io.db.olive.buffer.replacement.OLReplacementStrategy;
 import io.db.olive.storage.OLDataFile;
 import lombok.Getter;
+import lombok.Setter;
 
 public class OLBufferPool {
     private @Getter OLBuffer[] buffers;
-    private @Getter OLReplacementStrategy strategy;
+    private @Getter @Setter OLReplacementStrategy strategy;
     private @Getter int availableBuffers;
 
-    public OLBufferPool(int bufferCount, OLReplacementStrategy strategy) {
+    public OLBufferPool(int bufferCount) {
         buffers = new OLBuffer[bufferCount];
         for (int i = 0; i < bufferCount; i++) {
             buffers[i] = new OLBuffer();
         }
-        this.strategy = strategy;
         this.availableBuffers = bufferCount;
     }
 
     private OLBuffer findBufferHoldingPage(OLDataFile file, long pageID) {
         for (OLBuffer buffer: buffers) {
-            if (buffer.getPageId().getId() == pageID && buffer.getFile().equals(file)) {
+            if (buffer.getPage() == null) {
+                continue;
+            }
+            if (buffer.getPage().getPageID().getId() == pageID && buffer.getFile().equals(file)) {
                 return buffer;
             }
         }

@@ -6,9 +6,8 @@ import io.db.olive.storage.OLPageID;
 import lombok.Getter;
 
 public class OLBuffer {
-    private @Getter byte[] contents;
+    private @Getter OLPage page;
     private @Getter int pins = 0;
-    private @Getter OLPageID pageId;
     private @Getter OLDataFile file;
 
     public void loadPage(OLDataFile file, long id) throws Exception {
@@ -16,9 +15,7 @@ public class OLBuffer {
     }
 
     public void loadPage(OLDataFile file, OLPageID pageID) throws Exception {
-        OLPage page = file.readPage(pageID.getId());
-        this.contents = page.getContent();
-        this.pageId = pageID;
+        this.page = file.readPage(pageID.getId());
         this.file = file;
     }
 
@@ -37,8 +34,8 @@ public class OLBuffer {
     }
 
     public void flush() throws Exception {
-        if (pageId != null) {
-            file.writePage(pageId.getId(), contents);
+        if (page != null) {
+            file.writePage(page);
         }
     }
 }

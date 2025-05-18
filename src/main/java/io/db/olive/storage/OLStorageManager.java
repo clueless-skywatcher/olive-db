@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.db.olive.OLOptions;
+import io.db.olive.buffer.OLBuffer;
+import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
 import lombok.Getter;
@@ -48,13 +50,14 @@ public class OLStorageManager {
         dir.delete();
     }
 
-    public List<OLTuple> selectAllTuples(String tableName, OLTupleSchema schema) throws Exception {
+    public List<OLTuple> selectAllTuples(String tableName, OLTupleSchema schema, OLBufferPool pool) throws Exception {
         OLDataFile file = startTableFile(tableName, schema);
         long pageCount = file.getPageCount();
         List<OLTuple> tuples = new ArrayList<>();
         int pageNo = 0;
         while (pageNo < pageCount) {
-            OLPage page = file.readPage(pageNo);
+            OLBuffer pageBuffer = pool.readAndPinPage(file, pageNo);
+            OLPage page = pageBuffer.getPage();
             int count = page.getHeader().getSlotCounts();
             int slot = 0;
             while (slot < count) {
@@ -65,13 +68,14 @@ public class OLStorageManager {
                 }
                 slot++;
             }
+            pageBuffer.unpin();
             pageNo++;
         }
         return tuples;
     }
 
-    public void insertTuple(String tableName, OLTuple tuple) throws Exception {
+    public void insertTuple(String tableName, OLTuple tuple, OLBufferPool pool) throws Exception {
         OLDataFile tableFile = startTableFile(tableName, tuple.getSchema());
-        tableFile.insertTuple(tuple);
+        tableFile.insertTuple(tuple, pool);
     }
 }

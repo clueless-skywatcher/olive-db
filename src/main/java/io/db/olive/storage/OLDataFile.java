@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
+import io.db.olive.buffer.OLBuffer;
+import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.tuples.OLTuple;
 import lombok.Getter;
 
@@ -47,11 +49,11 @@ public class OLDataFile {
         return page;
     }  
     
-    public void writePage(long id, byte[] contents) throws Exception {
-        if (contents.length == pageSize) {
+    public void writePage(OLPage page) throws Exception {
+        if (page.getContent().length == pageSize) {
             RandomAccessFile raf = new RandomAccessFile(tableFile, "rws");
-            raf.seek(id * pageSize);
-            raf.write(contents);
+            raf.seek(page.getPageID().getId() * pageSize);
+            raf.write(page.getContent());
             raf.close();
         }
     }
@@ -60,14 +62,16 @@ public class OLDataFile {
         return this.tableFile.length() / this.pageSize;
     }
 
-    public void insertTuple(OLTuple tuple) throws Exception {
-        OLPage lastPage = readPage(getPageCount() - 1);
+    public void insertTuple(OLTuple tuple, OLBufferPool pool) throws Exception {
+        OLBuffer lastPageBuffer = pool.readAndPinPage(this, getPageCount() - 1);
         byte[] tupleBytes = tuple.serialize();
-        if (!lastPage.insertTuple(tupleBytes)) {
+        if (!lastPageBuffer.getPage().insertTuple(tupleBytes)) {
             addNewPage();
-            lastPage = readPage(getPageCount() - 1);
-            lastPage.insertTuple(tupleBytes);
+            lastPageBuffer.unpin();
+            lastPageBuffer = pool.readAndPinPage(this, getPageCount() - 1);
+            lastPageBuffer.getPage().insertTuple(tupleBytes);
         }
-        lastPage.writePage(tableFile, pageSize);
+        lastPageBuffer.getPage().writePage(tableFile, pageSize);
+        lastPageBuffer.unpin();
     }
 }

@@ -6,6 +6,10 @@ import io.db.olive.buffer.OLBufferPool;
 public class OLNaiveReplacementStrategy implements OLReplacementStrategy {
     private OLBufferPool pool;
 
+    public OLNaiveReplacementStrategy(OLBufferPool pool) {
+        this.pool = pool;
+    }
+
     @Override
     public OLBuffer chooseBuffer() {
         for (OLBuffer buffer: pool.getBuffers()) {
