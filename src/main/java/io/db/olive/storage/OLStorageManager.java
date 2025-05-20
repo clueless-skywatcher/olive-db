@@ -20,7 +20,7 @@ public class OLStorageManager {
     public OLStorageManager(String dbName, OLOptions options) throws Exception {
         this.dbName = dbName;
         this.pageSize = options.getPageSize();
-        String path = Paths.get(".olive", "db", dbName).toString();
+        String path = Paths.get(".olive", "data", dbName).toString();
         dataDir = new File(path);
         if (!dataDir.exists()) {
             boolean success = dataDir.mkdirs();

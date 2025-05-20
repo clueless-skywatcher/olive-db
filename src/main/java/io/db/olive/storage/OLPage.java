@@ -6,6 +6,33 @@ import java.nio.ByteBuffer;
 
 import lombok.Getter;
 
+/******************************************************* 
+ * Class for handling a database file page.
+ * 
+ * A single page consists of the following parts
+ * - A page header (16 bytes)
+ * - A slot array
+ * - Free space
+ * - Tuples stored in the page
+ * 
+ * A page header consists of the following parts
+ * - The number of occupied slots in the page (4 bytes)
+ * - The size of a tuple stored in the page (4 bytes)
+ * - The start position of the free space (4 bytes)
+ * - The end position of the free space (4 bytes)
+ * 
+ * A slot array consists of the following parts for each tuple
+ * stored in the page
+ * - A unique ID for a tuple (4 bytes)
+ * - A byte to denote whether the tuple is valid (not deleted)
+ * - The offset where the tuple is actually stored (4 bytes)
+ *  
+ * During insertion, tuples are inserted at the end of the free 
+ * space, and a slot entry is added at the beginning of the free 
+ * space.
+ * 
+********************************************************/
+
 public class OLPage {
     private ByteBuffer content;
     private @Getter OLPageID pageID;
