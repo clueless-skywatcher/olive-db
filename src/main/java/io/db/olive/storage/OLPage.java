@@ -10,6 +10,7 @@ public class OLPage {
     private ByteBuffer content;
     private @Getter OLPageID pageID;
     private @Getter OLPageHeader header;
+    private int lastTupleId = 0;
 
     public void readPage(File file, int pageID, int pageSize) throws Exception {
         readPage(file, new OLPageID(pageID), pageSize);
@@ -61,25 +62,34 @@ public class OLPage {
      * @param tuple
      * @return
      */
+
     public boolean insertTuple(byte[] tupleBytes) {
         int slotCounts = header.getSlotCounts();
-        int freeSpaceEnd = header.getFreeSpaceEnd();
         int freeSpaceStart = header.getFreeSpaceStart();
-        if (freeSpaceEnd - freeSpaceStart < Integer.BYTES + tupleBytes.length) {
+        int freeSpaceEnd = header.getFreeSpaceEnd();
+        if (freeSpaceEnd - freeSpaceStart < Integer.BYTES * 2 + 1 + tupleBytes.length) {
             return false;
         }
 
         int tupleInsertionPosition = freeSpaceEnd - tupleBytes.length;
-        int offsetInsertionPosition = freeSpaceStart;
+        int tupleIDInsertionPosition = freeSpaceStart;
+        int validByteInsertionPosition = freeSpaceStart + Integer.BYTES;
+        int offsetInsertionPosition = validByteInsertionPosition + 1;
 
-        content.position(tupleInsertionPosition);
-        content.put(tupleBytes);
+        content.position(tupleIDInsertionPosition);
+        content.putInt(lastTupleId);
+        content.position(validByteInsertionPosition);
+        content.put((byte) 1);
         content.position(offsetInsertionPosition);
         content.putInt(tupleInsertionPosition);
-
+        content.position(tupleInsertionPosition);
+        content.put(tupleBytes);
+        
         header.setSlotCounts(slotCounts + 1);
-        header.setFreeSpaceStart(freeSpaceStart + Integer.BYTES);
+        header.setFreeSpaceStart(freeSpaceStart + Integer.BYTES * 2 + 1);
         header.setFreeSpaceEnd(tupleInsertionPosition);
+
+        lastTupleId++;
 
         updateHeader(header);
 
@@ -106,19 +116,25 @@ public class OLPage {
             return null;
         }
 
-        content.position(OLPageHeader.getSlotArrayOffset() + slotId * Integer.BYTES);
+        content.position(OLPageHeader.getSlotArrayOffset() + slotId * (Integer.BYTES * 2 + 1));
+        content.getInt();
+        byte isDirty = content.get();
+
+        if (isDirty == (byte) 0) {
+            return null;
+        }
+
         int offset = content.getInt();
         content.position(offset);
+
+        byte[] tupleBytes = new byte[tupleSize];
+        content.get(tupleBytes);
         
-        byte[] tuple = new byte[tupleSize];
-        content.get(tuple);
+        ByteBuffer tupleBuffer = ByteBuffer.allocate(tupleSize);
+        tupleBuffer.put(tupleBytes);
+
         content.position(0);
 
-        // If tuple is invalid return null
-        if (tuple[0] == (byte) 0) {
-            return null;            
-        }
-        
-        return tuple;
+        return tupleBuffer.array();
     }
 }

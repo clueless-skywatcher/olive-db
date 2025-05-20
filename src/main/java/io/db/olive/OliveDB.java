@@ -29,7 +29,7 @@ public class OliveDB {
 
             database.createTable("students", schema);
 
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 1000; i++) {
                 OLTuple tuple1 = new OLTuple(schema);
                 tuple1.addField("name", new OLCappedChar("test" + i, 10));
                 tuple1.addField("id", new OLInteger(i));

@@ -62,8 +62,8 @@ public class OLStorageManager {
             int slot = 0;
             while (slot < count) {
                 byte[] tupleBytes = page.readTupleBytes(slot);
-                OLTuple tuple = OLTuple.deserialize(tupleBytes, schema);
-                if (tuple != null) {
+                if (tupleBytes != null) {
+                    OLTuple tuple = OLTuple.deserialize(tupleBytes, schema);
                     tuples.add(tuple);
                 }
                 slot++;

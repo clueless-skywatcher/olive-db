@@ -63,6 +63,7 @@ public class OLDataFile {
     }
 
     public void insertTuple(OLTuple tuple, OLBufferPool pool) throws Exception {
+        long secs = System.currentTimeMillis();
         OLBuffer lastPageBuffer = pool.readAndPinPage(this, getPageCount() - 1);
         byte[] tupleBytes = tuple.serialize();
         if (!lastPageBuffer.getPage().insertTuple(tupleBytes)) {
@@ -73,5 +74,6 @@ public class OLDataFile {
         }
         lastPageBuffer.getPage().writePage(tableFile, pageSize);
         lastPageBuffer.unpin();
+        System.out.println(System.currentTimeMillis() - secs);
     }
 }

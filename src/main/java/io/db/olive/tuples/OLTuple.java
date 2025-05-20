@@ -3,6 +3,7 @@ package io.db.olive.tuples;
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import io.db.olive.data.OLBoolean;
 import io.db.olive.data.OLCappedChar;
@@ -15,6 +16,7 @@ import lombok.Getter;
 public class OLTuple {
     private @Getter OLTupleSchema schema;
     private Map<String, OLSerializable<?>> fields;
+    private @Getter int id;
 
     public OLTuple(OLTupleSchema schema) {
         this.schema = schema;
@@ -35,7 +37,6 @@ public class OLTuple {
 
     public byte[] serialize() {
         ByteBuffer buf = ByteBuffer.allocate(schema.getSize());
-        buf.put((byte) 1);
         for (Map.Entry<String, OLSerializable<?>> entry: fields.entrySet()) {
             int offset = schema.getOffset(entry.getKey());
             buf.position(offset);
@@ -46,22 +47,17 @@ public class OLTuple {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
         for (Map.Entry<String, OLSerializable<?>> entry: fields.entrySet()) {
-            sb.append(entry.getKey()).append(": ").append(entry.getValue().toString()).append(", ");
+            joiner.add(entry.getKey() + ": " + entry.getValue().toString());
         }
-        return sb.toString();
+        return "{" + joiner.toString() + "}";
     }
 
     public static OLTuple deserialize(byte[] tupleBytes, OLTupleSchema schema) {
         ByteBuffer buffer = ByteBuffer.wrap(tupleBytes);
-        byte isValid = buffer.get();
-        if (isValid == (byte) 0) {
-            return null;
-        }
-
         OLTuple tuple = new OLTuple(schema);
-
+        
         for (String field: schema.getFields()) {
             int offset = schema.getOffset(field);
             OLDataInfo fieldType = schema.getInfo(field);
@@ -89,7 +85,6 @@ public class OLTuple {
                     break;
             }
         }
-
         return tuple;
     }
 }

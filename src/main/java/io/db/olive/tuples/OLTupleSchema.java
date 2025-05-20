@@ -11,7 +11,7 @@ import lombok.Getter;
 public class OLTupleSchema {
     private Map<String, OLDataInfo> schema = new LinkedHashMap<>();
     private Map<String, Integer> offsets = new LinkedHashMap<>();
-    private @Getter int size = 1; // 1 byte for the dirty bit
+    private @Getter int size = 0;
 
     public void addField(String name, OLDataInfo info) {
         schema.put(name, info);
