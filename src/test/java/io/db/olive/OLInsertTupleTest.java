@@ -25,7 +25,7 @@ public class OLInsertTupleTest {
         OLTupleSchema schema = new OLTupleSchema();
         schema.addField("name", new OLCappedCharInfo(10));
         schema.addField("id", new OLIntegerInfo());
-        OLDataFile file = db.createTable("test_table1", schema);
+        OLDataFile file = db.createTableFile("test_table1", schema);
         OLPage page = new OLPage();
         page.readPage(file.getTableFile(), new OLPageID(0), pageSize);
 

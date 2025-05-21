@@ -7,6 +7,7 @@ import io.db.olive.buffer.replacement.OLNaiveReplacementStrategy;
 import io.db.olive.data.OLCappedChar;
 import io.db.olive.data.info.OLCappedCharInfo;
 import io.db.olive.data.info.OLIntegerInfo;
+import io.db.olive.sql.OLSQLBase;
 import io.db.olive.data.OLInteger;
 import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
@@ -16,7 +17,7 @@ public class OliveDB {
         OLOptions options = OLOptions.builder()
                 .pageSize(1024)
                 .build();
-        OLDatabase database = new OLDatabase("personal", options);
+        OLDatabase database = new OLDatabase("olive", options);
         OLBufferPool pool = new OLBufferPool(5);
         pool.setStrategy(new OLNaiveReplacementStrategy(pool));
 
@@ -25,9 +26,7 @@ public class OliveDB {
             schema.addField("name", new OLCappedCharInfo(10));
             schema.addField("id", new OLIntegerInfo());
 
-            System.out.println(schema.getSize());
-
-            database.createTable("students", schema);
+            database.createTableFile("students", schema);
 
             for (int i = 1; i <= 1000; i++) {
                 OLTuple tuple1 = new OLTuple(schema);
@@ -36,13 +35,13 @@ public class OliveDB {
                 database.insertTuple("students", tuple1, pool);
             }
 
-            List<OLTuple> tuples = database.selectAllTuples("students", schema, pool);
-            for (OLTuple tuple : tuples) {
+            OLSQLBase stmt = OLParsingMachine.parse("select * from students");
+            stmt.execute(database, pool);
+            for (OLTuple tuple: stmt.getResult().getTuples()) {
                 System.out.println(tuple.toString());
             }
         } finally {
             database.dropDatabase();
         }
-
     }
 }

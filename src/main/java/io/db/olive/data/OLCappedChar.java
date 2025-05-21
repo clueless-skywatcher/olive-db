@@ -19,9 +19,6 @@ public class OLCappedChar implements OLSerializable<String> {
 
     @Override
     public byte[] serialize() {
-        if (value.equals("test100")) {
-            System.out.println();
-        }
         ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES + value.length());
         buf.putInt(value.length());
         buf.put(value.getBytes());
