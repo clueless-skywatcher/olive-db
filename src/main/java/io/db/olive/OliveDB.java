@@ -35,7 +35,7 @@ public class OliveDB {
                 database.insertTuple("students", tuple1, pool);
             }
 
-            OLSQLBase stmt = OLParsingMachine.parse("select * from students");
+            OLSQLBase stmt = OLParsingMachine.parse("select name from students");
             stmt.execute(database, pool);
             for (OLTuple tuple: stmt.getResult().getTuples()) {
                 System.out.println(tuple.toString());

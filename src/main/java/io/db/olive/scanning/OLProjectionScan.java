@@ -1,0 +1,35 @@
+package io.db.olive.scanning;
+
+import java.util.List;
+
+import io.db.olive.tuples.OLTuple;
+import io.db.olive.tuples.OLTupleSchema;
+
+public class OLProjectionScan implements OLScan {
+    private OLScan underlyingScan;
+    private List<String> fields;
+
+    public OLProjectionScan(OLScan underlyingScan, List<String> fields) {
+        this.underlyingScan = underlyingScan;
+        this.fields = fields;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return underlyingScan.hasNext();
+    }
+
+    @Override
+    public OLTuple next() throws Exception {
+        OLTuple nextTuple = underlyingScan.next();
+        OLTupleSchema schema = nextTuple.getSchema();
+        OLTuple projectedTuple = new OLTuple(schema);
+        
+        for (String field: fields) {
+            projectedTuple.addField(field, nextTuple.getField(field));
+        }
+
+        return projectedTuple;
+    }
+    
+}

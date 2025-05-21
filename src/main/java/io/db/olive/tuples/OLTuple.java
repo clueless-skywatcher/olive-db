@@ -23,6 +23,15 @@ public class OLTuple {
         this.fields = new LinkedHashMap<>();
     }
 
+    public OLTuple() {
+        this.schema = null;
+        this.fields = new LinkedHashMap<>();
+    }
+
+    public OLSerializable<?> getField(String fieldName) {
+        return this.fields.get(fieldName);
+    }
+
     public void addField(String name, OLSerializable<?> field) {
         if (schema.contains(name)) {
             if (field.getDataType() != schema.getInfo(name).getDataType()) {

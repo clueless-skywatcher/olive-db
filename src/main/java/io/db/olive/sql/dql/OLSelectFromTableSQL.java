@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import io.db.olive.OLDatabase;
 import io.db.olive.buffer.OLBufferPool;
+import io.db.olive.scanning.OLProjectionScan;
 import io.db.olive.scanning.OLScan;
 import io.db.olive.scanning.OLSequentialScan;
 import io.db.olive.sql.OLSQLBase;
@@ -26,6 +27,11 @@ public class OLSelectFromTableSQL implements OLSQLBase {
     @Override
     public void execute(OLDatabase database, OLBufferPool bufferPool) throws Exception {
         OLScan scan = new OLSequentialScan(tableName, database, bufferPool);
+        
+        if (columnList.size() > 0) {
+            scan = new OLProjectionScan(scan, columnList);
+        }
+        
         OLSQLResult result = new OLSQLResult();
         while (scan.hasNext()) {
             OLTuple nextTuple = scan.next();
