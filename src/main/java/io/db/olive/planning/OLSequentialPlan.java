@@ -5,12 +5,12 @@ import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.scanning.OLScan;
 import io.db.olive.scanning.OLSequentialScan;
 
-public class OLTablePlan implements OLPlan {
+public class OLSequentialPlan implements OLPlan {
     private String tableName;
     private OLDatabase database;
     private OLBufferPool bufferPool;
 
-    public OLTablePlan(String tableName, OLDatabase database, OLBufferPool pool) {
+    public OLSequentialPlan(String tableName, OLDatabase database, OLBufferPool pool) {
         this.tableName = tableName;
         this.database = database;
         this.bufferPool = pool;

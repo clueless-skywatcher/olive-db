@@ -28,8 +28,17 @@ public class OLProjectionScan implements OLScan {
         for (String field: fields) {
             projectedTuple.addField(field, nextTuple.getField(field));
         }
-
         return projectedTuple;
+    }
+
+    public String toString() {
+        return String.format("""
+        ProjectionScan
+        ---> %s
+        ---> With fields: %s""", 
+        underlyingScan.toString(),
+        fields.toString()
+        );
     }
     
 }

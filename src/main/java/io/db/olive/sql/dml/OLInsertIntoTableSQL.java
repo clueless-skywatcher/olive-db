@@ -1,9 +1,13 @@
 package io.db.olive.sql.dml;
 
+import java.util.List;
 import java.util.Map;
 
 import io.db.olive.OLDatabase;
 import io.db.olive.buffer.OLBufferPool;
+import io.db.olive.data.OLBoolean;
+import io.db.olive.data.OLCappedChar;
+import io.db.olive.data.OLInteger;
 import io.db.olive.data.OLSerializable;
 import io.db.olive.sql.OLSQLBase;
 import io.db.olive.sql.OLSQLResult;
@@ -13,12 +17,18 @@ import lombok.Getter;
 
 public class OLInsertIntoTableSQL implements OLSQLBase {
     private @Getter String tableName;
-    private Map<String, OLSerializable<?>> valueMap;
+    private Map<String, String> valueMap;
+    private List<String> valueList;
     private OLSQLResult result;
 
-    public OLInsertIntoTableSQL(String tableName, Map<String, OLSerializable<?>> valueMap) {
+    public OLInsertIntoTableSQL(String tableName, Map<String, String> valueMap) {
         this.tableName = tableName;
         this.valueMap = valueMap;
+    }
+
+    public OLInsertIntoTableSQL(String tableName, List<String> valueList) {
+        this.tableName = tableName;
+        this.valueList = valueList;
     }
 
     @Override
@@ -30,11 +40,46 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
     public void execute(OLDatabase database, OLBufferPool bufferPool) throws Exception {
         OLTupleSchema schema = database.getSchema(tableName);
         OLTuple tuple = new OLTuple(schema);
-        for (Map.Entry<String, OLSerializable<?>> value: valueMap.entrySet()) {
-            tuple.addField(value.getKey(), value.getValue());
+            
+        if (valueMap != null) {
+            for (Map.Entry<String, String> value: valueMap.entrySet()) {
+                String columnName = value.getKey();
+                String columnValue = value.getValue();
+
+                tuple.addField(columnName, inferValue(columnValue, schema, columnName));
+            }
+
+        } else {
+            List<String> allFields = schema.getFields();
+            for (int i = 0; i < valueList.size(); i++) {
+                String value = valueList.get(i);
+                String field = allFields.get(i);
+                tuple.addField(field, inferValue(value, schema, field));
+            }
         }
 
         database.insertTuple(tableName, tuple, bufferPool);
+    }
+
+    private OLSerializable<?> inferValue(String columnValue, OLTupleSchema schema, String columnName) throws Exception {
+        OLSerializable<?> val;
+
+        switch (schema.getInfo(columnName).getDataType()) {
+            case "Integer":
+                val = new OLInteger(Integer.parseInt(columnValue));
+                return val;
+            case "CappedChar":
+                val = new OLCappedChar(
+                    columnValue.substring(1, columnValue.length() - 1), 
+                    schema.getMaxSize(columnName)
+                );
+                return val;
+            case "Boolean":
+                val = new OLBoolean(Boolean.parseBoolean(columnValue.toLowerCase()));
+                return val;
+            default:
+                throw new Exception("Invalid data type");
+        }
     }
     
 }

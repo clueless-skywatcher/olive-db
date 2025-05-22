@@ -17,5 +17,12 @@ public class OLSelectionScan implements OLScan {
     @Override
     public OLTuple next() throws Exception {
         return underlyingScan.next();
-    }    
+    }  
+    
+    public String toString() {
+        return String.format("""
+        SelectionScan
+        ---> %s""", 
+        underlyingScan.toString());
+    }
 }

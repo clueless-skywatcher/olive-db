@@ -1,6 +1,6 @@
 package io.db.olive;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class OLDatabase {
     public OLDatabase(String dbName, OLOptions options) throws Exception {
         this.options = options;
         this.storageManager = new OLStorageManager(dbName, this.options);
-        this.schema = new HashMap<>();
+        this.schema = new LinkedHashMap<>();
     }
 
     public OLDataFile createTableFile(String tableName, OLTupleSchema schema) throws Exception {

@@ -61,4 +61,10 @@ public class OLSequentialScan implements OLScan {
 
         return tuple;
     }    
+
+    public String toString() {
+        return String.format("""
+        SequentialScan on %s""", 
+        tableName);
+    }
 }

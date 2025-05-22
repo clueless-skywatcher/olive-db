@@ -9,7 +9,7 @@ import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.planning.OLPlan;
 import io.db.olive.planning.OLProjectionPlan;
 import io.db.olive.planning.OLSelectionPlan;
-import io.db.olive.planning.OLTablePlan;
+import io.db.olive.planning.OLSequentialPlan;
 import io.db.olive.scanning.OLScan;
 import io.db.olive.sql.OLSQLBase;
 import io.db.olive.sql.OLSQLResult;
@@ -29,7 +29,7 @@ public class OLSelectFromTableSQL implements OLSQLBase {
     @Override
     public void execute(OLDatabase database, OLBufferPool bufferPool) throws Exception {
         OLPlan plan = new OLSelectionPlan(
-            new OLTablePlan(tableName, database, bufferPool)
+            new OLSequentialPlan(tableName, database, bufferPool)
         );
         
         if (columnList.size() > 0) {
@@ -46,6 +46,7 @@ public class OLSelectFromTableSQL implements OLSQLBase {
             }
         }
         this.result = result;
+        System.out.println(scan);
     }
     
 }

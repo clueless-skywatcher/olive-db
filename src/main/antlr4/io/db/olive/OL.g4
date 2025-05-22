@@ -40,7 +40,7 @@ columnDefinition
 
 // Insert into table statement
 insertIntoTable
-    : INSERT INTO tableName LPAREN columnList RPAREN VALUES LPAREN valueList RPAREN
+    : INSERT INTO tableName (LPAREN columnList RPAREN)? VALUES LPAREN valueList RPAREN
     ;
 
 // Common shit
@@ -54,6 +54,7 @@ value
     : STRING
     | INTEGER
     | NUMERIC
+    | BOOLVALUE
     ;
 columnList
     : columnName (COMMA columnName)*
@@ -62,11 +63,28 @@ columnName
     : IDENTIFIER
     ;
 dataType
-    : INT
-    | VARCHAR LPAREN INTEGER RPAREN
-    | FLOAT
-    | BOOLEAN
+    : intType
+    | varcharType
+    | floatType
+    | booleanType
     ;
+
+intType
+    : INT
+    ;
+
+varcharType
+    : VARCHAR LPAREN charLength=INTEGER RPAREN
+    ;
+
+floatType
+    : FLOAT
+    ;
+
+booleanType
+    : BOOLEAN
+    ;
+
 expression
     : columnName EQUAL value
     | LPAREN expression RPAREN

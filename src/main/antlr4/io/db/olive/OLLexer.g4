@@ -49,7 +49,12 @@ EQUAL: '=';
 INTEGER: DIGITS;
 NUMERIC: DIGITS '.' DIGITS;
 STRING: '\'' ( '\\' . | ~[\\'])* '\'';
+BOOLVALUE: TRUE | FALSE;
 IDENTIFIER: [a-zA-Z][a-zA-Z0-9_]*;
 WS: [ \t\r\n]+ -> skip;
+
+// Boolean values
+TRUE: 'true' | 'TRUE';
+FALSE: 'false' | 'FALSE';
 
 fragment DIGITS: [0-9]+;
