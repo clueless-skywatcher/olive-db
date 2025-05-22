@@ -3,7 +3,6 @@ package io.db.olive.sql.ddl;
 import java.util.Map;
 
 import io.db.olive.OLDatabase;
-import io.db.olive.OLParsingMachine;
 import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.data.info.OLDataInfo;
 import io.db.olive.sql.OLSQLBase;

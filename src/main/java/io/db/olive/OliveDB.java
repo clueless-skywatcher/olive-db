@@ -1,7 +1,5 @@
 package io.db.olive;
 
-import java.util.List;
-
 import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.buffer.replacement.OLNaiveReplacementStrategy;
 import io.db.olive.data.OLCappedChar;

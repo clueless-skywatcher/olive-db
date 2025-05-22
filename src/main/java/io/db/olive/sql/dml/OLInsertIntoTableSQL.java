@@ -14,8 +14,7 @@ import lombok.Getter;
 public class OLInsertIntoTableSQL implements OLSQLBase {
     private @Getter String tableName;
     private Map<String, OLSerializable<?>> valueMap;
-    private @Getter OLSQLResult result;
-
+    private OLSQLResult result;
 
     public OLInsertIntoTableSQL(String tableName, Map<String, OLSerializable<?>> valueMap) {
         this.tableName = tableName;
