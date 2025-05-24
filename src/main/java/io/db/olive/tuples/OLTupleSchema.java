@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import io.db.olive.data.info.OLDataInfo;
 import lombok.Getter;
@@ -37,5 +38,26 @@ public class OLTupleSchema {
 
     public List<String> getFields() {
         return new ArrayList<>(schema.keySet());
+    }
+
+    public String getCreateTableAttributeString() {
+        StringJoiner joiner = new StringJoiner(", ");
+
+        for (Map.Entry<String, OLDataInfo> entry: schema.entrySet()) {
+            String val = entry.getValue().getSQLTypeName();
+            joiner.add(String.format("%s %s", entry.getKey(), val));
+        }
+
+        return joiner.toString();
+    }
+
+    public String getInsertionAttributeString() {
+        StringJoiner joiner = new StringJoiner(", ");
+
+        for (String fieldName: schema.keySet()) {
+            joiner.add(fieldName);
+        }
+
+        return joiner.toString();
     }
 }

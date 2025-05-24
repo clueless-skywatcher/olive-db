@@ -10,4 +10,9 @@ public class OLIntegerInfo implements OLDataInfo {
     public String getDataType() {
         return "Integer";
     }
+
+    @Override
+    public String getSQLTypeName() {
+        return "int";
+    }
 }

@@ -11,7 +11,6 @@ import io.db.olive.sql.dml.OLInsertIntoTableSQL;
 import io.db.olive.sql.dql.OLSelectFromTableSQL;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
                 columnList.add(pt.getText());
             }
         }
-        return new OLSelectFromTableSQL(tableName, columnList);
+        return new OLSelectFromTableSQL(tableName, columnList, ctx.getText());
     }
 
     @Override
@@ -56,7 +55,7 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
             columnMap.put(columnName, info);
         }
 
-        return new OLCreateTableSQL(tableName, columnMap);
+        return new OLCreateTableSQL(tableName, columnMap, ctx.getText());
     }
 
     @Override
@@ -72,14 +71,14 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
 
                 values.put(columnName, valueContext);
             }
-            return new OLInsertIntoTableSQL(tableName, values);
+            return new OLInsertIntoTableSQL(tableName, values, ctx.getText());
         } else {
             List<String> valueList = new ArrayList<>();
             for (OL.ValueContext value: ctx.valueList().value()) {
                 valueList.add(value.getText());
             }  
 
-            return new OLInsertIntoTableSQL(tableName, valueList);
+            return new OLInsertIntoTableSQL(tableName, valueList, ctx.getText());
         }
     }
 

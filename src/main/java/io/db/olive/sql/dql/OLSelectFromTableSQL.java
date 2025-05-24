@@ -19,11 +19,13 @@ public class OLSelectFromTableSQL implements OLSQLBase {
     private @Getter String tableName;
     private @Getter List<String> columnList;
     private @Getter OLSQLResult result;
+    private String query;
 
-    public OLSelectFromTableSQL(String tableName, List<String> columnList) {
+    public OLSelectFromTableSQL(String tableName, List<String> columnList, String query) {
         this.tableName = tableName;
         this.columnList = columnList;
         this.result = new OLSQLResult();
+        this.query = query;
     }
 
     @Override
@@ -46,7 +48,10 @@ public class OLSelectFromTableSQL implements OLSQLBase {
             }
         }
         this.result = result;
-        System.out.println(scan);
+    }
+
+    public String toString() {
+        return query;
     }
     
 }

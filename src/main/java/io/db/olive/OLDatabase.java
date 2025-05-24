@@ -15,21 +15,21 @@ public class OLDatabase {
     private @Getter OLStorageManager storageManager;
     private @Getter OLOptions options;
     private @Getter String dbName;
-    private Map<String, OLTupleSchema> schema;
+    private Map<String, OLTupleSchema> schemaCache;
     
     public OLDatabase(String dbName, OLOptions options) throws Exception {
         this.options = options;
         this.storageManager = new OLStorageManager(dbName, this.options);
-        this.schema = new LinkedHashMap<>();
+        this.schemaCache = new LinkedHashMap<>();
     }
 
     public OLDataFile createTableFile(String tableName, OLTupleSchema schema) throws Exception {
-        this.schema.put(tableName, schema);
+        this.schemaCache.put(tableName, schema);
         return this.storageManager.startTableFile(tableName, schema);
     }
 
     public OLDataFile getTableFile(String tableName) throws Exception {
-        return this.storageManager.startTableFile(tableName, schema.get(tableName));
+        return this.storageManager.startTableFile(tableName, schemaCache.get(tableName));
     }
 
     public void dropDatabase() throws Exception {
@@ -45,6 +45,6 @@ public class OLDatabase {
     }
 
     public OLTupleSchema getSchema(String tableName) {
-        return this.schema.get(tableName);
+        return this.schemaCache.get(tableName);
     }
 }

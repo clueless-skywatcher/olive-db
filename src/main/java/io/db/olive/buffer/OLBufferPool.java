@@ -1,5 +1,6 @@
 package io.db.olive.buffer;
 
+import io.db.olive.OLOptions;
 import io.db.olive.buffer.replacement.OLReplacementStrategy;
 import io.db.olive.storage.OLDataFile;
 import lombok.Getter;
@@ -16,6 +17,10 @@ public class OLBufferPool {
             buffers[i] = new OLBuffer();
         }
         this.availableBuffers = bufferCount;
+    }
+
+    public OLBufferPool(OLOptions options) {
+        this(options.getBufferPoolSize());
     }
 
     private OLBuffer findBufferHoldingPage(OLDataFile file, long pageID) {

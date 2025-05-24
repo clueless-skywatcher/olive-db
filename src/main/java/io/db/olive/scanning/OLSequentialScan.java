@@ -8,11 +8,11 @@ import io.db.olive.storage.OLPage;
 import io.db.olive.storage.OLStorageManager;
 import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
+
 import lombok.Getter;
 
 public class OLSequentialScan implements OLScan {
     private @Getter String tableName;
-    // private OLDatabase database;
     private OLBufferPool bufferPool;
     private int currentSlot;
     private OLDataFile tableFile;

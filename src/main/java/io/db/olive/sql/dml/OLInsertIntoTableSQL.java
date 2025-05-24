@@ -13,6 +13,7 @@ import io.db.olive.sql.OLSQLBase;
 import io.db.olive.sql.OLSQLResult;
 import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
+
 import lombok.Getter;
 
 public class OLInsertIntoTableSQL implements OLSQLBase {
@@ -20,15 +21,18 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
     private Map<String, String> valueMap;
     private List<String> valueList;
     private OLSQLResult result;
+    private String query;
 
-    public OLInsertIntoTableSQL(String tableName, Map<String, String> valueMap) {
+    public OLInsertIntoTableSQL(String tableName, Map<String, String> valueMap, String query) {
         this.tableName = tableName;
         this.valueMap = valueMap;
+        this.query = query;
     }
 
-    public OLInsertIntoTableSQL(String tableName, List<String> valueList) {
+    public OLInsertIntoTableSQL(String tableName, List<String> valueList, String query) {
         this.tableName = tableName;
         this.valueList = valueList;
+        this.query = query;
     }
 
     @Override
@@ -80,6 +84,9 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
             default:
                 throw new Exception("Invalid data type");
         }
-    }
+    }  
     
+    public String toString() {
+        return query;
+    }  
 }
