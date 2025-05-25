@@ -24,7 +24,6 @@ public class OLSelectFromTableSQL implements OLSQLBase {
     public OLSelectFromTableSQL(String tableName, List<String> columnList, String query) {
         this.tableName = tableName;
         this.columnList = columnList;
-        this.result = new OLSQLResult();
         this.query = query;
     }
 
@@ -40,7 +39,7 @@ public class OLSelectFromTableSQL implements OLSQLBase {
 
         OLScan scan = plan.open();
         
-        OLSQLResult result = new OLSQLResult();
+        OLSQLResult result = new OLSQLResult(scan.getSchema());
         while (scan.hasNext()) {
             OLTuple nextTuple = scan.next();
             if (nextTuple != null) {

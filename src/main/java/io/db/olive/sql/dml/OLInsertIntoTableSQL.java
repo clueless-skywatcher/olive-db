@@ -62,7 +62,7 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
             }
         }
 
-        database.insertTuple(tableName, tuple, bufferPool);
+        database.insertTuple(tableName, tuple);
     }
 
     private OLSerializable<?> inferValue(String columnValue, OLTupleSchema schema, String columnName) throws Exception {

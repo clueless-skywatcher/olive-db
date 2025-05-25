@@ -5,8 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import io.db.olive.data.info.OLBooleanInfo;
+import io.db.olive.data.info.OLCappedCharInfo;
 import io.db.olive.data.info.OLDataInfo;
+import io.db.olive.data.info.OLIntegerInfo;
 import lombok.Getter;
 
 public class OLTupleSchema {
@@ -60,4 +65,26 @@ public class OLTupleSchema {
 
         return joiner.toString();
     }
+
+    public static OLDataInfo inferTypeFromDataTypeString(String dataType) throws Exception {
+        dataType = dataType.toLowerCase();
+        if (dataType.equals("int")) {
+            return new OLIntegerInfo();
+        } else if (dataType.equals("boolean")) {
+            return new OLBooleanInfo();
+        } else if (dataType.startsWith("varchar")) {
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(dataType);
+
+            if (matcher.find()) {
+                int cap = Integer.parseInt(matcher.group(0));
+                return new OLCappedCharInfo(cap);
+            } else {
+                throw new Exception("Invalid datatype name: " + dataType);
+            }
+        }
+        else {
+            return null;
+        }
+    } 
 }

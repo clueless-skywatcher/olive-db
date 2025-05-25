@@ -33,6 +33,10 @@ public class OLCreateTableSQL implements OLSQLBase {
 
     @Override
     public void execute(OLDatabase database, OLBufferPool bufferPool) throws Exception {
+        if (database.exists(tableName)) {
+            throw new Exception(String.format("Tablename %s already exists", tableName));
+        }
+        
         database.createTableFile(tableName, schema);
 
         if (!OLUtils.isMetaTable(tableName)) {

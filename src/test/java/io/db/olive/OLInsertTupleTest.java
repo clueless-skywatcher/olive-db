@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.data.OLCappedChar;
 import io.db.olive.data.OLInteger;
 import io.db.olive.data.info.OLCappedCharInfo;
@@ -21,7 +22,9 @@ public class OLInsertTupleTest {
         OLOptions options = OLOptions.builder()
             .pageSize(pageSize)
             .build();
-        OLDatabase db = new OLDatabase("test", options);
+
+        OLBufferPool bufferPool = new OLBufferPool(options);
+        OLDatabase db = new OLDatabase("test", options, bufferPool);
         OLTupleSchema schema = new OLTupleSchema();
         schema.addField("name", new OLCappedCharInfo(10));
         schema.addField("id", new OLIntegerInfo());

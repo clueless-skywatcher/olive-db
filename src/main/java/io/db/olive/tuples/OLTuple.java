@@ -15,7 +15,7 @@ import lombok.Getter;
 
 public class OLTuple {
     private @Getter OLTupleSchema schema;
-    private Map<String, OLSerializable<?>> fields;
+    private @Getter Map<String, OLSerializable<?>> fields;
     private @Getter int id;
 
     public OLTuple(OLTupleSchema schema) {

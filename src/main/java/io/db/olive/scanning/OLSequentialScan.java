@@ -18,7 +18,7 @@ public class OLSequentialScan implements OLScan {
     private OLDataFile tableFile;
     private OLPage currentPage;
     private long pageCount;
-    private OLTupleSchema schema;
+    private @Getter OLTupleSchema schema;
     private OLBuffer currentBuffer;
 
     public OLSequentialScan(
