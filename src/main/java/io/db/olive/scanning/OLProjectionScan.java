@@ -23,30 +23,43 @@ public class OLProjectionScan implements OLScan {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws Exception {
         return underlyingScan.hasNext();
     }
 
     @Override
-    public OLTuple next() throws Exception {
-        OLTuple nextTuple = underlyingScan.next();
-        OLTupleSchema schema = nextTuple.getSchema();
-        OLTuple projectedTuple = new OLTuple(schema);
-        
-        for (String field: fields) {
-            projectedTuple.addField(field, nextTuple.getField(field));
-        }
-        return projectedTuple;
+    public void next() throws Exception {
+        underlyingScan.next();
     }
 
     public String toString() {
+        return toString("");
+    }
+
+    public String toString(String indent) {
         return String.format("""
-        ProjectionScan
-        ---> %s
-        ---> With fields: %s""", 
-        underlyingScan.toString(),
-        fields.toString()
-        );
+        %sProjectionScan
+        %s---> %s
+        %s---> On fields: %s""", 
+        indent,
+        indent, underlyingScan.toString(indent + " "),
+        indent, fields.toString());
+    }
+
+    @Override
+    public OLTuple getCurrentRow() throws Exception {
+        OLTuple tuple = underlyingScan.getCurrentRow();
+        if (tuple == null) {
+            return null;
+        }
+
+        OLTupleSchema schema = tuple.getSchema();
+        OLTuple projectedTuple = new OLTuple(schema);
+        
+        for (String field: fields) {
+            projectedTuple.addField(field, tuple.getField(field));
+        }
+        return projectedTuple;
     }
     
 }

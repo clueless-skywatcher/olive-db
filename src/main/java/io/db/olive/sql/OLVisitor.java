@@ -2,6 +2,10 @@ package io.db.olive.sql;
 
 import io.db.olive.OL;
 import io.db.olive.OL.InsertIntoTableContext;
+import io.db.olive.data.OLBoolean;
+import io.db.olive.data.OLCappedChar;
+import io.db.olive.data.OLInteger;
+import io.db.olive.data.OLSerializable;
 import io.db.olive.data.info.OLBooleanInfo;
 import io.db.olive.data.info.OLCappedCharInfo;
 import io.db.olive.data.info.OLDataInfo;
@@ -30,7 +34,33 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
                 columnList.add(pt.getText());
             }
         }
-        return new OLSelectFromTableSQL(tableName, columnList, ctx.getText());
+
+        OLPredicate predicate = new OLPredicate();
+
+        if (ctx.condition() != null) {
+            for (OL.ExpressionContext expression: ctx.condition().expression()) {
+                if (expression.term() != null) {
+                    String columnName = expression.term().columnName().getText();
+                    OL.ValueContext valueContext = expression.term().value();
+                    OLSerializable<?> val;
+                    if (valueContext.INTEGER() != null) {
+                        int intVal = Integer.parseInt(valueContext.getText());
+                        val = new OLInteger(intVal);
+                    } else if (valueContext.BOOLVALUE() != null) {
+                        boolean boolVal = Boolean.parseBoolean(valueContext.getText());
+                        val = new OLBoolean(boolVal);
+                    } else {
+                        String strVal = valueContext.getText();
+                        strVal = strVal.substring(1, strVal.length() - 1);
+                        val = new OLCappedChar(strVal, strVal.length());
+                    }
+
+                    predicate.addTerm(new OLTerm(columnName, val));
+                }
+            }
+        }
+
+        return new OLSelectFromTableSQL(tableName, columnList, predicate, ctx.getText());
     }
 
     @Override

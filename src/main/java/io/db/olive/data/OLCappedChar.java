@@ -38,4 +38,13 @@ public class OLCappedChar implements OLSerializable<String> {
     public String getDataType() {
         return "CappedChar";
     }
+
+    public boolean equals(Object other) {
+        if (other instanceof OLSerializable<?>) {
+            OLSerializable<?> otherObj = (OLSerializable<?>) other;
+            return this.value.equals(otherObj.getValue());
+        }
+
+        return false;
+    }
 }

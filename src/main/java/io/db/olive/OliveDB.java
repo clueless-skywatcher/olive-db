@@ -36,7 +36,7 @@ public class OliveDB {
             
             Random random = new Random();
 
-            for (int i = 11; i <= 20; i++) {
+            for (int i = 1; i <= 10; i++) {
                 OLSQLBase insertTuple = OLParsingMachine.parse(
                     String.format(
                         "insert into students values (%d, \'%s\', %s);",
@@ -48,15 +48,15 @@ public class OliveDB {
                 insertTuple.execute(database, pool);
             }
 
-            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students;");
+            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students where id = 5;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            OLSQLBase selectTables = OLParsingMachine.parse("select * from ol_tables;");
+            OLSQLBase selectTables = OLParsingMachine.parse("select * from ol_tables where tablename = 'students';");
             selectTables.execute(database, pool);
             System.out.println(selectTables.getResult());
 
-            selectTables = OLParsingMachine.parse("select * from ol_attributes;");
+            selectTables = OLParsingMachine.parse("select * from ol_attributes where tablename = 'students';");
             selectTables.execute(database, pool);
             System.out.println(selectTables.getResult());
             

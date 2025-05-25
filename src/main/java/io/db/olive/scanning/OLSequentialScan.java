@@ -20,7 +20,7 @@ public class OLSequentialScan implements OLScan {
     private long pageCount;
     private @Getter OLTupleSchema schema;
     private OLBuffer currentBuffer;
-
+    
     public OLSequentialScan(
         String tableName, OLDatabase database, 
         OLBufferPool bufferPool
@@ -42,14 +42,17 @@ public class OLSequentialScan implements OLScan {
             currentPage.getPageID().getId() < pageCount;
     }
 
-    @Override
-    public OLTuple next() throws Exception {
+    public OLTuple getCurrentRow() {
         byte[] tupleBytes = currentPage.readTupleBytes(currentSlot);
         if (tupleBytes == null) {
             return null;
         }
-
         OLTuple tuple = OLTuple.deserialize(tupleBytes, this.schema);
+        return tuple;
+    }
+
+    @Override
+    public void next() throws Exception {
         if (currentSlot == currentPage.getHeader().getSlotCounts() - 1) {
             currentBuffer.unpin();
             currentBuffer = bufferPool.readAndPinPage(tableFile, currentPage.getPageID().getId() + 1);
@@ -58,13 +61,15 @@ public class OLSequentialScan implements OLScan {
         } else {
             currentSlot++;
         }
-
-        return tuple;
     }    
 
     public String toString() {
+        return toString("");
+    }
+
+    public String toString(String indent) {
         return String.format("""
-        SequentialScan on %s""", 
-        tableName);
+        %sSequentialScan on %s""", 
+        indent, tableName);
     }
 }

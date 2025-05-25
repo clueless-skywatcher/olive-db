@@ -28,5 +28,13 @@ public class OLBoolean implements OLSerializable<Boolean> {
     public String getDataType() {
         return "Boolean";
     }
-    
+
+    public boolean equals(Object other) {
+        if (other instanceof OLSerializable<?>) {
+            OLSerializable<?> otherObj = (OLSerializable<?>) other;
+            return this.value.equals(otherObj.getValue());
+        }
+
+        return false;
+    }
 }

@@ -86,7 +86,11 @@ booleanType
     ;
 
 expression
-    : columnName EQUAL value
+    : term
     | LPAREN expression RPAREN
+    ;
+
+term
+    : columnName EQUAL value
     ;
 

@@ -4,7 +4,9 @@ import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
 
 public interface OLScan {
-    public boolean hasNext();
-    public OLTuple next() throws Exception;
+    public boolean hasNext() throws Exception;
+    public void next() throws Exception;
     public OLTupleSchema getSchema();
+    public OLTuple getCurrentRow() throws Exception;
+    public String toString(String indent);
 }
