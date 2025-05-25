@@ -1,7 +1,5 @@
 package io.db.olive.metatables;
 
-import java.util.List;
-
 import io.db.olive.tuples.OLTupleSchema;
 
 public interface OLMetaTable{
