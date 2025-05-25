@@ -15,12 +15,21 @@ import lombok.Getter;
 
 public class OLTuple {
     private @Getter OLTupleSchema schema;
-    private Map<String, OLSerializable<?>> fields;
+    private @Getter Map<String, OLSerializable<?>> fields;
     private @Getter int id;
 
     public OLTuple(OLTupleSchema schema) {
         this.schema = schema;
         this.fields = new LinkedHashMap<>();
+    }
+
+    public OLTuple() {
+        this.schema = null;
+        this.fields = new LinkedHashMap<>();
+    }
+
+    public OLSerializable<?> getField(String fieldName) {
+        return this.fields.get(fieldName);
     }
 
     public void addField(String name, OLSerializable<?> field) {

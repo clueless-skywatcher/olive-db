@@ -10,4 +10,9 @@ public class OLBooleanInfo implements OLDataInfo {
     public String getDataType() {
         return "Boolean";
     }
+
+    @Override
+    public String getSQLTypeName() {
+        return "boolean";
+    }
 }

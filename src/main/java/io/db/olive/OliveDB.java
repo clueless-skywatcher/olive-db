@@ -1,48 +1,67 @@
 package io.db.olive;
 
-import java.util.List;
+import java.util.Random;
+
+import java.io.File;
+import java.nio.file.Paths;
 
 import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.buffer.replacement.OLNaiveReplacementStrategy;
-import io.db.olive.data.OLCappedChar;
-import io.db.olive.data.info.OLCappedCharInfo;
-import io.db.olive.data.info.OLIntegerInfo;
-import io.db.olive.data.OLInteger;
-import io.db.olive.tuples.OLTuple;
-import io.db.olive.tuples.OLTupleSchema;
+import io.db.olive.sql.OLSQLBase;
 
 public class OliveDB {
     public static void main(String[] args) throws Exception {
         OLOptions options = OLOptions.builder()
                 .pageSize(1024)
+                .bufferPoolSize(5)
                 .build();
-        OLDatabase database = new OLDatabase("personal", options);
-        OLBufferPool pool = new OLBufferPool(5);
+
+        OLBufferPool pool = new OLBufferPool(options);
         pool.setStrategy(new OLNaiveReplacementStrategy(pool));
 
+        File databaseDir = Paths.get(".olive", "data", "olive").toFile();
+        OLDatabase database;
+        
+        if (!databaseDir.exists()) {
+            database = OLDBInitializer.initialize("olive", options, pool);
+        } else {
+            database = new OLDatabase("olive", options, pool);
+        }
+
         try {
-            OLTupleSchema schema = new OLTupleSchema();
-            schema.addField("name", new OLCappedCharInfo(10));
-            schema.addField("id", new OLIntegerInfo());
+            OLSQLBase createTable = OLParsingMachine.parse(
+                "create table students (id int, name varchar(20), isStudent boolean);"
+            );
+            createTable.execute(database, pool);
+            
+            Random random = new Random();
 
-            System.out.println(schema.getSize());
+            for (int i = 1; i <= 10; i++) {
+                OLSQLBase insertTuple = OLParsingMachine.parse(
+                    String.format(
+                        "insert into students values (%d, \'%s\', %s);",
+                        i, "test" + i,
+                        random.nextBoolean()
+                    )
+                );
 
-            database.createTable("students", schema);
-
-            for (int i = 1; i <= 1000; i++) {
-                OLTuple tuple1 = new OLTuple(schema);
-                tuple1.addField("name", new OLCappedChar("test" + i, 10));
-                tuple1.addField("id", new OLInteger(i));
-                database.insertTuple("students", tuple1, pool);
+                insertTuple.execute(database, pool);
             }
 
-            List<OLTuple> tuples = database.selectAllTuples("students", schema, pool);
-            for (OLTuple tuple : tuples) {
-                System.out.println(tuple.toString());
-            }
+            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students where id = 5;");
+            stmt.execute(database, pool);
+            System.out.println(stmt.getResult());
+
+            OLSQLBase selectTables = OLParsingMachine.parse("select * from ol_tables where tablename = 'students';");
+            selectTables.execute(database, pool);
+            System.out.println(selectTables.getResult());
+
+            selectTables = OLParsingMachine.parse("select * from ol_attributes where tablename = 'students';");
+            selectTables.execute(database, pool);
+            System.out.println(selectTables.getResult());
+            
         } finally {
             database.dropDatabase();
         }
-
     }
 }

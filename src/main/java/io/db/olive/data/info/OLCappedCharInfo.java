@@ -16,4 +16,11 @@ public class OLCappedCharInfo implements OLDataInfo {
     public String getDataType() {
         return "CappedChar";
     }
+
+    @Override
+    public String getSQLTypeName() {
+        return String.format("varchar(%d)", cap);
+    }
+
+    
 }

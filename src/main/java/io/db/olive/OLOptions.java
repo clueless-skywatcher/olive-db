@@ -6,4 +6,5 @@ import lombok.Getter;
 @Builder
 public class OLOptions {
     private @Getter int pageSize;
+    private @Getter int bufferPoolSize;
 }
