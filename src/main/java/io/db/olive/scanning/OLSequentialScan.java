@@ -1,8 +1,12 @@
 package io.db.olive.scanning;
 
+import java.nio.ByteBuffer;
+
 import io.db.olive.OLDatabase;
 import io.db.olive.buffer.OLBuffer;
 import io.db.olive.buffer.OLBufferPool;
+import io.db.olive.data.OLSerializable;
+import io.db.olive.sql.OLPredicate;
 import io.db.olive.storage.OLDataFile;
 import io.db.olive.storage.OLPage;
 import io.db.olive.storage.OLStorageManager;
@@ -11,7 +15,7 @@ import io.db.olive.tuples.OLTupleSchema;
 
 import lombok.Getter;
 
-public class OLSequentialScan implements OLScan {
+public class OLSequentialScan implements OLWriteableScan {
     private @Getter String tableName;
     private OLBufferPool bufferPool;
     private int currentSlot;
@@ -71,5 +75,27 @@ public class OLSequentialScan implements OLScan {
         return String.format("""
         %sSequentialScan on %s""", 
         indent, tableName);
+    }
+
+    @Override
+    public void update(OLPredicate predicate, String fieldName, OLSerializable<?> value) throws Exception {        
+        OLTuple currentRow = getCurrentRow();
+        if (currentRow == null) {
+            return;
+        }
+        byte[] tupleBytes = currentRow.serialize();
+        if (predicate.isSatisfied(currentRow)) {
+            ByteBuffer buffer = ByteBuffer.wrap(tupleBytes);
+            int offset = schema.getOffset(fieldName);
+            buffer.position(offset);
+            buffer.put(value.serialize());
+            currentPage.writeTupleBytes(currentSlot, tupleBytes);
+        }
+    }
+
+    @Override
+    public void delete(OLPredicate predicate) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 }

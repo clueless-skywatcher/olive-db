@@ -136,6 +136,20 @@ public class OLPage {
         content.position(0);
     }
 
+    public void writeTupleBytes(int slotId, byte[] tupleBytes) {
+        content.position(OLPageHeader.getSlotArrayOffset() + slotId * (Integer.BYTES * 2 + 1));
+        content.getInt();
+        byte isDirty = content.get();
+        if (isDirty == (byte) 0) {
+            return;
+        }
+
+        int offset = content.getInt();
+        content.position(offset);
+        content.put(tupleBytes);
+        content.position(0);
+    }
+
     public byte[] readTupleBytes(int slotId) {
         int tupleSize = header.getTupleSize();
 

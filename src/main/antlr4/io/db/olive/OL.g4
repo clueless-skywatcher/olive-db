@@ -12,8 +12,8 @@ statement
     : select
     | createTable
     | insertIntoTable
-    // | deleteFromTable
-    // | updateTable
+    | deleteFromTable
+    | updateTable
     // | dropTable
     ;
 
@@ -41,6 +41,16 @@ columnDefinition
 // Insert into table statement
 insertIntoTable
     : INSERT INTO tableName (LPAREN columnList RPAREN)? VALUES LPAREN valueList RPAREN
+    ;
+
+// Update table statement
+updateTable
+    : UPDATE TABLE tableName SET term (WHERE condition)?
+    ;
+
+// Delete from table statement
+deleteFromTable
+    : DELETE TABLE tableName (WHERE condition)?
     ;
 
 // Common shit

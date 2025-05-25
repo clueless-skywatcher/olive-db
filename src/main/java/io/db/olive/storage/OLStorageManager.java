@@ -50,30 +50,6 @@ public class OLStorageManager {
         dir.delete();
     }
 
-    public List<OLTuple> selectAllTuples(String tableName, OLTupleSchema schema, OLBufferPool pool) throws Exception {
-        OLDataFile file = startTableFile(tableName, schema);
-        long pageCount = file.getPageCount();
-        List<OLTuple> tuples = new ArrayList<>();
-        int pageNo = 0;
-        while (pageNo < pageCount) {
-            OLBuffer pageBuffer = pool.readAndPinPage(file, pageNo);
-            OLPage page = pageBuffer.getPage();
-            int count = page.getHeader().getSlotCounts();
-            int slot = 0;
-            while (slot < count) {
-                byte[] tupleBytes = page.readTupleBytes(slot);
-                if (tupleBytes != null) {
-                    OLTuple tuple = OLTuple.deserialize(tupleBytes, schema);
-                    tuples.add(tuple);
-                }
-                slot++;
-            }
-            pageBuffer.unpin();
-            pageNo++;
-        }
-        return tuples;
-    }
-
     public void insertTuple(String tableName, OLTuple tuple, OLBufferPool pool) throws Exception {
         OLDataFile tableFile = startTableFile(tableName, tuple.getSchema());
         tableFile.insertTuple(tuple, pool);

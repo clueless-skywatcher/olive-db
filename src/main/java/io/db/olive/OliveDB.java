@@ -48,18 +48,16 @@ public class OliveDB {
                 insertTuple.execute(database, pool);
             }
 
-            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students where id = 5;");
+            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students where isStudent = false;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            OLSQLBase selectTables = OLParsingMachine.parse("select * from ol_tables where tablename = 'students';");
-            selectTables.execute(database, pool);
-            System.out.println(selectTables.getResult());
+            stmt = OLParsingMachine.parse("update table students set name = 'toby' where isStudent = false");
+            stmt.execute(database, pool);
 
-            selectTables = OLParsingMachine.parse("select * from ol_attributes where tablename = 'students';");
-            selectTables.execute(database, pool);
-            System.out.println(selectTables.getResult());
-            
+            stmt = OLParsingMachine.parse("select id, name, isStudent from students where isStudent = false;");
+            stmt.execute(database, pool);
+            System.out.println(stmt.getResult());            
         } finally {
             database.dropDatabase();
         }

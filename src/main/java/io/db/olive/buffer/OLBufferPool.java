@@ -49,6 +49,9 @@ public class OLBufferPool {
         // No buffers found that hold the page, have to replace
         if (buffer == null) {
             buffer = strategy.chooseBuffer();
+            if (buffer != null) {
+                buffer.flush();
+            }
             buffer.loadPage(file, pageID);
         }
 

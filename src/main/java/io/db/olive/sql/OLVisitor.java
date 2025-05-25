@@ -1,6 +1,7 @@
 package io.db.olive.sql;
 
 import io.db.olive.OL;
+import io.db.olive.OL.DeleteFromTableContext;
 import io.db.olive.data.OLBoolean;
 import io.db.olive.data.OLCappedChar;
 import io.db.olive.data.OLInteger;
@@ -11,6 +12,7 @@ import io.db.olive.data.info.OLDataInfo;
 import io.db.olive.data.info.OLIntegerInfo;
 import io.db.olive.sql.ddl.OLCreateTableSQL;
 import io.db.olive.sql.dml.OLInsertIntoTableSQL;
+import io.db.olive.sql.dml.OLUpdateTableSQL;
 import io.db.olive.sql.dql.OLSelectFromTableSQL;
 
 import java.util.ArrayList;
@@ -23,6 +25,60 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import io.db.olive.OLBaseVisitor;
 
 public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
+
+    @Override
+    public OLSQLBase visitDeleteFromTable(DeleteFromTableContext ctx) {
+        // TODO Auto-generated method stub
+        return super.visitDeleteFromTable(ctx);
+    }
+
+    @Override
+    public OLSQLBase visitUpdateTable(OL.UpdateTableContext ctx) {
+        String tableName = ctx.tableName().getText();
+
+        OL.TermContext term = ctx.term();
+        String setField = term.columnName().getText();
+        OL.ValueContext tValueContext = term.value();
+        OLSerializable<?> tVal;
+        if (tValueContext.INTEGER() != null) {
+            int intVal = Integer.parseInt(tValueContext.getText());
+            tVal = new OLInteger(intVal);
+        } else if (tValueContext.BOOLVALUE() != null) {
+            boolean boolVal = Boolean.parseBoolean(tValueContext.getText());
+            tVal = new OLBoolean(boolVal);
+        } else {
+            String strVal = tValueContext.getText();
+            strVal = strVal.substring(1, strVal.length() - 1);
+            tVal = new OLCappedChar(strVal, strVal.length());
+        }
+        
+
+        OLPredicate predicate = new OLPredicate();
+        if (ctx.condition() != null) {
+            for (OL.ExpressionContext expression: ctx.condition().expression()) {
+                if (expression.term() != null) {
+                    String columnName = expression.term().columnName().getText();
+                    OL.ValueContext valueContext = expression.term().value();
+                    OLSerializable<?> val;
+                    if (valueContext.INTEGER() != null) {
+                        int intVal = Integer.parseInt(valueContext.getText());
+                        val = new OLInteger(intVal);
+                    } else if (valueContext.BOOLVALUE() != null) {
+                        boolean boolVal = Boolean.parseBoolean(valueContext.getText());
+                        val = new OLBoolean(boolVal);
+                    } else {
+                        String strVal = valueContext.getText();
+                        strVal = strVal.substring(1, strVal.length() - 1);
+                        val = new OLCappedChar(strVal, strVal.length());
+                    }
+
+                    predicate.addTerm(new OLTerm(columnName, val));
+                }
+            }
+        }
+
+        return new OLUpdateTableSQL(tableName, predicate, setField, tVal);
+    }
 
     @Override
     public OLSelectFromTableSQL visitSelectFromTable(OL.SelectFromTableContext ctx) {
