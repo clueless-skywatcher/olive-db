@@ -16,7 +16,7 @@ import lombok.Getter;
  * - Tuples stored in the page
  * 
  * A page header consists of the following parts
- * - The number of occupied slots in the page (4 bytes)
+ * - The number of occupied slots in the page, INCLUDING invalid slots (4 bytes)
  * - The size of a tuple stored in the page (4 bytes)
  * - The start position of the free space (4 bytes)
  * - The end position of the free space (4 bytes)
@@ -177,5 +177,16 @@ public class OLPage {
         content.position(0);
 
         return tupleBuffer.array();
+    }
+
+    public void markInvalid(int slotId) {
+        if (slotId >= header.getSlotCounts()) {
+            return;
+        }
+
+        content.position(OLPageHeader.getSlotArrayOffset() + slotId * (Integer.BYTES * 2 + 1));
+        content.getInt();
+        content.put((byte) 0);
+        content.position(0);
     }
 }

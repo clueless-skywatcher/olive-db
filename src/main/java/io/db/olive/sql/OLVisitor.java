@@ -11,6 +11,7 @@ import io.db.olive.data.info.OLCappedCharInfo;
 import io.db.olive.data.info.OLDataInfo;
 import io.db.olive.data.info.OLIntegerInfo;
 import io.db.olive.sql.ddl.OLCreateTableSQL;
+import io.db.olive.sql.dml.OLDeleteFromTableSQL;
 import io.db.olive.sql.dml.OLInsertIntoTableSQL;
 import io.db.olive.sql.dml.OLUpdateTableSQL;
 import io.db.olive.sql.dql.OLSelectFromTableSQL;
@@ -28,8 +29,33 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
 
     @Override
     public OLSQLBase visitDeleteFromTable(DeleteFromTableContext ctx) {
-        // TODO Auto-generated method stub
-        return super.visitDeleteFromTable(ctx);
+        String tableName = ctx.tableName().getText();
+
+        OLPredicate predicate = new OLPredicate();
+        if (ctx.condition() != null) {
+            for (OL.ExpressionContext expression: ctx.condition().expression()) {
+                if (expression.term() != null) {
+                    String columnName = expression.term().columnName().getText();
+                    OL.ValueContext valueContext = expression.term().value();
+                    OLSerializable<?> val;
+                    if (valueContext.INTEGER() != null) {
+                        int intVal = Integer.parseInt(valueContext.getText());
+                        val = new OLInteger(intVal);
+                    } else if (valueContext.BOOLVALUE() != null) {
+                        boolean boolVal = Boolean.parseBoolean(valueContext.getText());
+                        val = new OLBoolean(boolVal);
+                    } else {
+                        String strVal = valueContext.getText();
+                        strVal = strVal.substring(1, strVal.length() - 1);
+                        val = new OLCappedChar(strVal, strVal.length());
+                    }
+
+                    predicate.addTerm(new OLTerm(columnName, val));
+                }
+            }
+        }
+
+        return new OLDeleteFromTableSQL(tableName, predicate);
     }
 
     @Override

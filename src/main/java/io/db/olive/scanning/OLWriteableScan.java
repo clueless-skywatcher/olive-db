@@ -5,5 +5,5 @@ import io.db.olive.sql.OLPredicate;
 
 public interface OLWriteableScan extends OLScan {
     public void update(OLPredicate predicate, String fieldName, OLSerializable<?> value) throws Exception;
-    public void delete(OLPredicate predicate);
+    public void delete(OLPredicate predicate) throws Exception;
 }

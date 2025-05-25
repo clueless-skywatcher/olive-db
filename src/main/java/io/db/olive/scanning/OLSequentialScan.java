@@ -94,8 +94,13 @@ public class OLSequentialScan implements OLWriteableScan {
     }
 
     @Override
-    public void delete(OLPredicate predicate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(OLPredicate predicate) throws Exception {
+        OLTuple currentRow = getCurrentRow();
+        if (currentRow == null) {
+            return;
+        }
+        if (predicate.isSatisfied(currentRow)) {
+            currentPage.markInvalid(currentSlot);
+        }
     }
 }

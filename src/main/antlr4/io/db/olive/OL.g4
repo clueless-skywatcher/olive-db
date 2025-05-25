@@ -50,7 +50,7 @@ updateTable
 
 // Delete from table statement
 deleteFromTable
-    : DELETE TABLE tableName (WHERE condition)?
+    : DELETE FROM tableName (WHERE condition)?
     ;
 
 // Common shit

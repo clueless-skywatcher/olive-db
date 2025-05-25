@@ -681,7 +681,7 @@ public class OL extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class DeleteFromTableContext extends ParserRuleContext {
 		public TerminalNode DELETE() { return getToken(OL.DELETE, 0); }
-		public TerminalNode TABLE() { return getToken(OL.TABLE, 0); }
+		public TerminalNode FROM() { return getToken(OL.FROM, 0); }
 		public TableNameContext tableName() {
 			return getRuleContext(TableNameContext.class,0);
 		}
@@ -705,7 +705,7 @@ public class OL extends Parser {
 			setState(124);
 			match(DELETE);
 			setState(125);
-			match(TABLE);
+			match(FROM);
 			setState(126);
 			tableName();
 			setState(129);
@@ -1316,7 +1316,7 @@ public class OL extends Parser {
 		"\u0014\n\u0000vw\u0005\u0011\u0000\u0000wz\u0003*\u0015\u0000xy\u0005"+
 		"\t\u0000\u0000y{\u0003\b\u0004\u0000zx\u0001\u0000\u0000\u0000z{\u0001"+
 		"\u0000\u0000\u0000{\u0011\u0001\u0000\u0000\u0000|}\u0005\u0004\u0000"+
-		"\u0000}~\u0005\u0005\u0000\u0000~\u0081\u0003\u0014\n\u0000\u007f\u0080"+
+		"\u0000}~\u0005\u0007\u0000\u0000~\u0081\u0003\u0014\n\u0000\u007f\u0080"+
 		"\u0005\t\u0000\u0000\u0080\u0082\u0003\b\u0004\u0000\u0081\u007f\u0001"+
 		"\u0000\u0000\u0000\u0081\u0082\u0001\u0000\u0000\u0000\u0082\u0013\u0001"+
 		"\u0000\u0000\u0000\u0083\u0084\u0005-\u0000\u0000\u0084\u0015\u0001\u0000"+

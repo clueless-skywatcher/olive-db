@@ -48,14 +48,14 @@ public class OliveDB {
                 insertTuple.execute(database, pool);
             }
 
-            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students where isStudent = false;");
+            OLSQLBase stmt = OLParsingMachine.parse("select id, name, isStudent from students;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            stmt = OLParsingMachine.parse("update table students set name = 'toby' where isStudent = false");
+            stmt = OLParsingMachine.parse("delete from students where isStudent = false;");
             stmt.execute(database, pool);
 
-            stmt = OLParsingMachine.parse("select id, name, isStudent from students where isStudent = false;");
+            stmt = OLParsingMachine.parse("select id, name, isStudent from students;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());            
         } finally {
