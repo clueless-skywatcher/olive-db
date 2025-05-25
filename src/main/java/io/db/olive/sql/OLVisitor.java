@@ -1,7 +1,6 @@
 package io.db.olive.sql;
 
 import io.db.olive.OL;
-import io.db.olive.OL.InsertIntoTableContext;
 import io.db.olive.data.OLBoolean;
 import io.db.olive.data.OLCappedChar;
 import io.db.olive.data.OLInteger;
@@ -89,7 +88,7 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
     }
 
     @Override
-    public OLSQLBase visitInsertIntoTable(InsertIntoTableContext ctx) {
+    public OLSQLBase visitInsertIntoTable(OL.InsertIntoTableContext ctx) {
         String tableName = ctx.tableName().getText();
         Map<String, String> values = new LinkedHashMap<>();
 
