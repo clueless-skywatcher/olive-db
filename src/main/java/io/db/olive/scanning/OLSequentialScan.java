@@ -11,6 +11,7 @@ import io.db.olive.storage.OLDataFile;
 import io.db.olive.storage.OLPage;
 import io.db.olive.storage.OLStorageManager;
 import io.db.olive.tuples.OLTuple;
+import io.db.olive.tuples.OLTupleIdentifier;
 import io.db.olive.tuples.OLTupleSchema;
 
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class OLSequentialScan implements OLWriteableScan {
             return null;
         }
         OLTuple tuple = OLTuple.deserialize(tupleBytes, this.schema);
+        tuple.setId(new OLTupleIdentifier(currentPage.getPageID().getId(), currentSlot));
         return tuple;
     }
 

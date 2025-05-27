@@ -2,6 +2,8 @@ package io.db.olive.scanning;
 
 import java.util.List;
 
+import io.db.olive.data.OLCappedChar;
+import io.db.olive.data.info.OLCappedCharInfo;
 import io.db.olive.tuples.OLTuple;
 import io.db.olive.tuples.OLTupleSchema;
 import lombok.Getter;
@@ -18,7 +20,11 @@ public class OLProjectionScan implements OLScan {
         this.schema = new OLTupleSchema();
         OLTupleSchema underlyingSchema = underlyingScan.getSchema();
         for (String field: fields) {
-            this.schema.addField(field, underlyingSchema.getInfo(field));
+            if (field.equals("ctid")) {
+                this.schema.addField(field, new OLCappedCharInfo(50));
+            } else {
+                this.schema.addField(field, underlyingSchema.getInfo(field));
+            }
         }
     }
 
@@ -54,10 +60,17 @@ public class OLProjectionScan implements OLScan {
         }
 
         OLTupleSchema schema = tuple.getSchema();
+        if (fields.contains("ctid")) {
+            schema.addField("ctid", new OLCappedCharInfo(50));
+        }
         OLTuple projectedTuple = new OLTuple(schema);
         
         for (String field: fields) {
-            projectedTuple.addField(field, tuple.getField(field));
+            if (field.equals("ctid")) {
+                projectedTuple.addField(field, new OLCappedChar(tuple.getId().toString(), 50));
+            } else {
+                projectedTuple.addField(field, tuple.getField(field));
+            }
         }
         return projectedTuple;
     }

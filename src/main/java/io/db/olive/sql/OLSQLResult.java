@@ -65,6 +65,12 @@ public class OLSQLResult {
             fullResultBuilder.append("\n");
         }
 
+        fullResultBuilder.append("+");
+        for (String field: fields) {
+            fullResultBuilder.append("-".repeat(columnWidths.get(field) + 2) + "+");
+        }
+        fullResultBuilder.append("\n");
+
         return fullResultBuilder.toString();
     }
 }

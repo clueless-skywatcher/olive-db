@@ -21,8 +21,10 @@ public class OLTupleSchema {
 
     public void addField(String name, OLDataInfo info) {
         schema.put(name, info);
-        offsets.put(name, size);
-        size += info.getMaxSize();
+        if (!name.equals("ctid")) {
+            offsets.put(name, size);
+            size += info.getMaxSize();
+        }
     }
 
     public boolean contains(String name) {
