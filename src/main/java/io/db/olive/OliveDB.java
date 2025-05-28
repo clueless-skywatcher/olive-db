@@ -54,7 +54,7 @@ public class OliveDB {
             stmt = OLParsingMachine.parse("insert into students values (11, 'test11', true)");
             stmt.execute(database, pool);
             
-            stmt = OLParsingMachine.parse("select ctid, name from students;");
+            stmt = OLParsingMachine.parse("select name, isStudent from students;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
         

@@ -1,4 +1,4 @@
-package io.db.olive.planning;
+package io.db.olive.planning.plans;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package io.db.olive.planning;
+package io.db.olive.planning.plans;
 
 import io.db.olive.OLDatabase;
 import io.db.olive.buffer.OLBufferPool;

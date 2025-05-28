@@ -16,14 +16,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OLCreateTableSQL implements OLSQLBase {
     private @Getter String tableName;
-    private Map<String, OLDataInfo> columnMap;
     private @Getter OLSQLResult result;
     private OLTupleSchema schema;
     private String query;
 
     public OLCreateTableSQL(String tableName, Map<String, OLDataInfo> columnMap, String query) {
         this.tableName = tableName;
-        this.columnMap = columnMap;
         this.schema = new OLTupleSchema();
         for (Map.Entry<String, OLDataInfo> entry : columnMap.entrySet()) {
             this.schema.addField(entry.getKey(), entry.getValue());
