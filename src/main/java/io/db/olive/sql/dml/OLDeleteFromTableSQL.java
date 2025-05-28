@@ -2,8 +2,6 @@ package io.db.olive.sql.dml;
 
 import io.db.olive.OLDatabase;
 import io.db.olive.buffer.OLBufferPool;
-import io.db.olive.data.OLSerializable;
-import io.db.olive.scanning.OLScan;
 import io.db.olive.scanning.OLSequentialScan;
 import io.db.olive.scanning.OLWriteableScan;
 import io.db.olive.sql.OLPredicate;
