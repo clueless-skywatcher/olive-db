@@ -45,7 +45,6 @@ public class OLBufferPool {
 
     public OLBuffer readAndPinPage(OLDataFile file, long pageID) throws Exception {
         OLBuffer buffer = findBufferHoldingPage(file, pageID);
-        
         // No buffers found that hold the page, have to replace
         if (buffer == null) {
             buffer = strategy.chooseBuffer();
@@ -54,7 +53,7 @@ public class OLBufferPool {
             }
             buffer.loadPage(file, pageID);
         }
-
+        
         if (buffer.isReplaceable()) {
             availableBuffers--;
         }

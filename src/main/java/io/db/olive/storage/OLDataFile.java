@@ -74,4 +74,13 @@ public class OLDataFile {
         lastPageBuffer.getPage().writePage(tableFile, pageSize);
         lastPageBuffer.unpin();
     }
+
+    public boolean equals(Object file) {
+        if (file instanceof OLDataFile) {
+            OLDataFile dataFile = (OLDataFile) file;
+            return dataFile.getTableFile().equals(getTableFile());
+        }
+
+        return false;
+    }
 }

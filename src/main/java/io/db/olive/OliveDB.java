@@ -57,6 +57,10 @@ public class OliveDB {
             stmt = OLParsingMachine.parse("select name, isStudent from students;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
+
+            stmt = OLParsingMachine.parse("select name, isStudent from students where name = 'test5';");
+            stmt.execute(database, pool);
+            System.out.println(stmt.getResult());
         
         } finally {
             database.dropDatabase();
