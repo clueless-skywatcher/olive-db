@@ -39,6 +39,9 @@ public class OLPredicate {
     }
 
     public String toString() {
+        if (terms.size() == 0) {
+            return "No predicates";
+        }
         StringJoiner joiner = new StringJoiner(" AND ");
         for (OLTerm term: terms) {
             joiner.add(term.toString());
