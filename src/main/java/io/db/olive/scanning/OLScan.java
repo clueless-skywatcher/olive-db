@@ -8,5 +8,6 @@ public interface OLScan {
     public void next() throws Exception;
     public OLTupleSchema getSchema();
     public OLTuple getCurrentRow() throws Exception;
+    public void rewind() throws Exception;
     public String toString(String indent);
 }

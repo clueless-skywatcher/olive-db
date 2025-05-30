@@ -36,6 +36,7 @@ public class OLSequentialScan implements OLWriteableScan {
         this.bufferPool = bufferPool;
         this.currentSlot = 0;
         this.tableFile = storageManager.startTableFile(tableName, schema);
+        this.tableFile.setReadOnly(true);
         this.pageCount = tableFile.getPageCount();
         this.currentBuffer = bufferPool.readAndPinPage(tableFile, 0);
         this.currentPage = currentBuffer.getPage();
@@ -104,5 +105,12 @@ public class OLSequentialScan implements OLWriteableScan {
         if (predicate.isSatisfied(currentRow)) {
             currentPage.markInvalid(currentSlot);
         }
+    }
+
+    @Override
+    public void rewind() throws Exception {
+        this.currentSlot = 0;
+        this.currentBuffer = bufferPool.readAndPinPage(tableFile, 0);
+        this.currentPage = currentBuffer.getPage();
     }
 }

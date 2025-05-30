@@ -15,19 +15,19 @@ import io.db.olive.sql.OLSQLBase;
 import io.db.olive.sql.OLSQLResult;
 
 public class OLSelectFromTableSQL implements OLSQLBase {
-    private @Getter String tableName;
+    private @Getter List<String> tableNames;
     private @Getter List<String> columnList;
     private @Getter OLPredicate predicate;
     private @Getter OLSQLResult result;
     private String query;
 
     public OLSelectFromTableSQL(
-        String tableName, 
+        List<String> tableNames, 
         List<String> columnList, 
         OLPredicate predicate,
         String query
     ) {
-        this.tableName = tableName;
+        this.tableNames = tableNames;
         this.columnList = columnList;
         this.query = query;
         this.predicate = predicate;

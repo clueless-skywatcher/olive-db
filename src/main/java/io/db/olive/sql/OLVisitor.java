@@ -108,7 +108,11 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
 
     @Override
     public OLSelectFromTableSQL visitSelectFromTable(OL.SelectFromTableContext ctx) {
-        String tableName = ctx.tableName().getText();
+        List<String> tableNames = new ArrayList<>();
+        for (OL.TableNameContext tctx: ctx.tableRef().tableNamesCommaSeparated().tableName()) {
+            tableNames.add(tctx.getText());
+        }
+        
         List<String> columnList = new ArrayList<>();
         if (ctx.ASTERISK() == null) {
             for (ParseTree pt: ctx.columnList().columnName()) {
@@ -141,7 +145,7 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
             }
         }
 
-        return new OLSelectFromTableSQL(tableName, columnList, predicate, ctx.getText());
+        return new OLSelectFromTableSQL(tableNames, columnList, predicate, ctx.getText());
     }
 
     @Override

@@ -74,5 +74,10 @@ public class OLProjectionScan implements OLScan {
         }
         return projectedTuple;
     }
+
+    @Override
+    public void rewind() throws Exception {
+        underlyingScan.rewind();
+    }
     
 }

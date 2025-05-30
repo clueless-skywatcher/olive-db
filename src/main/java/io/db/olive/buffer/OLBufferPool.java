@@ -50,6 +50,8 @@ public class OLBufferPool {
             buffer = strategy.chooseBuffer();
             if (buffer != null) {
                 buffer.flush();
+            } else {
+                throw new Exception("All buffers are pinned. Consider expanding your buffer pool");
             }
             buffer.loadPage(file, pageID);
         }

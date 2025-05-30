@@ -54,4 +54,9 @@ public class OLSelectionScan implements OLScan {
 
         return currentRow;
     }
+
+    @Override
+    public void rewind() throws Exception {
+        underlyingScan.rewind();
+    }
 }

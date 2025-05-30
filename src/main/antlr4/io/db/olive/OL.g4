@@ -24,8 +24,17 @@ select
 
 // Select statement
 selectFromTable
-    : SELECT (columnList | ASTERISK) FROM tableName (WHERE condition)?
+    : SELECT (columnList | ASTERISK) FROM tableRef (WHERE condition)?
     ;
+
+tableRef
+    : tableNamesCommaSeparated
+    ;
+
+tableNamesCommaSeparated
+    : tableName (COMMA tableName)*
+    ;
+
 condition
     : expression (AND expression)*
     ;

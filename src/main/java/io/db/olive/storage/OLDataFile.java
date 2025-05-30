@@ -8,17 +8,19 @@ import io.db.olive.buffer.OLBuffer;
 import io.db.olive.buffer.OLBufferPool;
 import io.db.olive.tuples.OLTuple;
 import lombok.Getter;
+import lombok.Setter;
 
 public class OLDataFile {
     private @Getter int pageSize;
     private @Getter File tableFile;
     private @Getter int tupleSize;
+    private @Getter @Setter boolean readOnly;
 
     public OLDataFile(File tableFile, int pageSize, int tupleSize) throws Exception {
         this.tableFile = tableFile;
         this.pageSize = pageSize;
         this.tupleSize = tupleSize;
-
+        this.readOnly = false;
         // If file is new, add a new page
         if (this.tableFile.createNewFile() || this.tableFile.length() == 0) {
             addNewPage();
@@ -41,7 +43,7 @@ public class OLDataFile {
 
     public OLPage readPage(long id) throws Exception {
         OLPage page = new OLPage();
-        if (getPageCount() <= id) {
+        if (getPageCount() <= id && !readOnly) {
             addNewPage();
         }
 

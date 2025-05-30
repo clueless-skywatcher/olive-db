@@ -13,7 +13,7 @@ public class OliveDB {
     public static void main(String[] args) throws Exception {
         OLOptions options = OLOptions.builder()
                 .pageSize(1024)
-                .bufferPoolSize(5)
+                .bufferPoolSize(100)
                 .build();
 
         OLBufferPool pool = new OLBufferPool(options);
@@ -30,35 +30,69 @@ public class OliveDB {
 
         try {
             OLSQLBase createTable = OLParsingMachine.parse(
-                "create table students (id int, name varchar(20), isStudent boolean);"
+                "create table students1 (id int, name varchar(20), isStudent boolean);"
             );
             createTable.execute(database, pool);
             
+            createTable = OLParsingMachine.parse(
+                "create table students2 (roll int, class int);"
+            );
+            createTable.execute(database, pool);
+
+            createTable = OLParsingMachine.parse(
+                "create table students3 (partner int);"
+            );
+            createTable.execute(database, pool);
+
             Random random = new Random();
 
-            for (int i = 1; i <= 10; i++) {
+            for (int i = 1; i <= 2; i++) {
                 OLSQLBase insertTuple = OLParsingMachine.parse(
                     String.format(
-                        "insert into students values (%d, \'%s\', %s);",
+                        "insert into students1 values (%d, \'%s\', %s);",
                         i, "test" + i,
                         random.nextBoolean()
                     )
                 );
-
+                insertTuple.execute(database, pool);
+            }
+            
+            for (int i = 1; i <= 2; i++)
+            {
+                OLSQLBase insertTuple = OLParsingMachine.parse(
+                    String.format(
+                        "insert into students2 values (%d, %d);", 
+                        i, random.nextInt(1, 13)
+                    )
+                );
                 insertTuple.execute(database, pool);
             }
 
-            OLSQLBase stmt = OLParsingMachine.parse("delete from students where id = 9;");
-            stmt.execute(database, pool);
-            
-            stmt = OLParsingMachine.parse("insert into students values (11, 'test11', true)");
-            stmt.execute(database, pool);
-            
-            stmt = OLParsingMachine.parse("select name, isStudent from students;");
+            for (int i = 1; i <= 2; i++)
+            {
+                OLSQLBase insertTuple = OLParsingMachine.parse(
+                    String.format(
+                        "insert into students3 values (%d);", 
+                        i, random.nextInt(101)
+                    )
+                );
+                insertTuple.execute(database, pool);
+            }
+
+
+            OLSQLBase stmt = OLParsingMachine.parse("select * from students1;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            stmt = OLParsingMachine.parse("select name, isStudent from students where name = 'test5';");
+            stmt = OLParsingMachine.parse("select * from students2;");
+            stmt.execute(database, pool);
+            System.out.println(stmt.getResult());
+
+            stmt = OLParsingMachine.parse("select * from students1, students3;");
+            stmt.execute(database, pool);
+            System.out.println(stmt.getResult());
+
+            stmt = OLParsingMachine.parse("select * from students1, students2, students3 where roll = 2;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
         
