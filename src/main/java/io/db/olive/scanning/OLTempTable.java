@@ -19,7 +19,7 @@ public class OLTempTable {
         this.bufferPool = bufferPool;
     }
 
-    public OLScan open(OLDatabase database, OLBufferPool bufferPool) throws Exception {
+    public OLWriteableScan open() throws Exception {
         return new OLSequentialScan(tableName, database, bufferPool);
     }
 

@@ -20,17 +20,21 @@ public class OLSelectFromTableSQL implements OLSQLBase {
     private @Getter OLPredicate predicate;
     private @Getter OLSQLResult result;
     private String query;
+    private @Getter List<String> orderList;
+    private @Getter boolean orderAscending;
 
     public OLSelectFromTableSQL(
         List<String> tableNames, 
         List<String> columnList, 
         OLPredicate predicate,
-        String query
+        String query, List<String> orderList, boolean ascending
     ) {
         this.tableNames = tableNames;
         this.columnList = columnList;
         this.query = query;
         this.predicate = predicate;
+        this.orderList = orderList;
+        this.orderAscending = ascending;
     }
 
     @Override

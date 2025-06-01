@@ -29,7 +29,7 @@ public class OLMaterializationPlan implements OLPlan {
             tempTable.insertTuple(row);
         }
 
-        return tempTable.open(database, bufferPool);
+        return tempTable.open();
     }
     
 }

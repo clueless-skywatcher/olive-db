@@ -145,7 +145,19 @@ public class OLVisitor extends OLBaseVisitor<OLSQLBase> {
             }
         }
 
-        return new OLSelectFromTableSQL(tableNames, columnList, predicate, ctx.getText());
+        List<String> orderList = new ArrayList<>();
+        boolean ascending = true;
+
+        if (ctx.orderBy() != null) {
+            for (ParseTree pt: ctx.orderBy().columnList().columnName()) {
+                orderList.add(pt.getText());
+            }
+            if (ctx.orderBy().DESC() != null) {
+                ascending = false;
+            }
+        }
+
+        return new OLSelectFromTableSQL(tableNames, columnList, predicate, ctx.getText(), orderList, ascending);
     }
 
     @Override

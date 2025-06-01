@@ -30,6 +30,7 @@ BY: 'BY' | 'by';
 HAVING: 'HAVING' | 'having';
 LIMIT: 'LIMIT' | 'limit';
 ALTER: 'ALTER' | 'alter';
+DESC: 'DESC' | 'desc';
 
 // Data types
 INT: 'INT' | 'int';

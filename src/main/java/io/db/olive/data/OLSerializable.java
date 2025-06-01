@@ -5,4 +5,5 @@ public interface OLSerializable<T> {
     public byte[] serialize();
     public int getMaxSize();
     public String getDataType();
+    public int compareTo(OLSerializable<?> o) throws Exception;
 }

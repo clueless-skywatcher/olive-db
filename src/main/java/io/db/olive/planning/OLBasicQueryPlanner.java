@@ -10,6 +10,7 @@ import io.db.olive.planning.plans.OLProductPlan;
 import io.db.olive.planning.plans.OLProjectionPlan;
 import io.db.olive.planning.plans.OLSelectionPlan;
 import io.db.olive.planning.plans.OLSequentialPlan;
+import io.db.olive.planning.plans.OLSortingPlan;
 import io.db.olive.sql.dql.OLSelectFromTableSQL;
 
 public class OLBasicQueryPlanner implements OLQueryPlanner {
@@ -32,6 +33,10 @@ public class OLBasicQueryPlanner implements OLQueryPlanner {
 
         if (query.getColumnList().size() > 0) {
             plan = new OLProjectionPlan(plan, query.getColumnList());
+        }
+
+        if (query.getOrderList().size() > 0) {
+            plan = new OLSortingPlan(plan, 1024, query.getOrderList(), !query.isOrderAscending());
         }
 
         return plan;

@@ -37,4 +37,17 @@ public class OLBoolean implements OLSerializable<Boolean> {
 
         return false;
     }
+
+    @Override
+    public int compareTo(OLSerializable<?> o) throws Exception {
+        if (o == null) {
+            return 1;
+        }
+        
+        if (o instanceof OLBoolean) {
+            OLBoolean other = (OLBoolean) o;
+            return this.value.compareTo(other.getValue());
+        }
+        throw new Exception("Cannot compare OLBoolean with " + o);
+    }
 }

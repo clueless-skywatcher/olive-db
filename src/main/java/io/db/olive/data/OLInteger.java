@@ -38,4 +38,18 @@ public class OLInteger implements OLSerializable<Integer> {
 
         return false;
     }
+
+    @Override
+    public int compareTo(OLSerializable<?> o) throws Exception {
+        if (o == null) {
+            return 1;
+        }
+
+        if (o instanceof OLInteger) {
+            OLInteger intVal = (OLInteger) o;
+            return Integer.compare(this.value, intVal.getValue());
+        }
+
+        throw new Exception("Cannot compare OLInteger with " + o);
+    }
 }

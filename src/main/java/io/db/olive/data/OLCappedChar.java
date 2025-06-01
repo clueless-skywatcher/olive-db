@@ -47,4 +47,17 @@ public class OLCappedChar implements OLSerializable<String> {
 
         return false;
     }
+
+    @Override
+    public int compareTo(OLSerializable<?> o) throws Exception {
+        if (o == null) {
+            return 1;
+        }
+        
+        if (o instanceof OLCappedChar) {
+            OLCappedChar other = (OLCappedChar) o;
+            return this.value.compareTo(other.getValue());
+        }
+        throw new Exception("Cannot compare OLCappedChar with " + o);
+    }
 }

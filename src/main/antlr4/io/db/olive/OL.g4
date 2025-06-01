@@ -24,7 +24,11 @@ select
 
 // Select statement
 selectFromTable
-    : SELECT (columnList | ASTERISK) FROM tableRef (WHERE condition)?
+    : SELECT (columnList | ASTERISK) FROM tableRef (WHERE condition)? orderBy?
+    ;
+
+orderBy
+    : ORDER BY columnList DESC?
     ;
 
 tableRef

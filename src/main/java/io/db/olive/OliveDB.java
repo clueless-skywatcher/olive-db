@@ -1,7 +1,8 @@
 package io.db.olive;
 
+import java.util.HashSet;
 import java.util.Random;
-
+import java.util.Set;
 import java.io.File;
 import java.nio.file.Paths;
 
@@ -34,68 +35,39 @@ public class OliveDB {
             );
             createTable.execute(database, pool);
             
-            createTable = OLParsingMachine.parse(
-                "create table students2 (roll int, class int);"
-            );
-            createTable.execute(database, pool);
-
-            createTable = OLParsingMachine.parse(
-                "create table students3 (partner int);"
-            );
-            createTable.execute(database, pool);
-
             Random random = new Random();
-
-            for (int i = 1; i <= 2; i++) {
-                OLSQLBase insertTuple = OLParsingMachine.parse(
-                    String.format(
-                        "insert into students1 values (%d, \'%s\', %s);",
-                        i, "test" + i,
-                        random.nextBoolean()
-                    )
+            Set<Integer> idSet = new HashSet<>();
+            for (int i = 1; i <= 10; i++) {
+                int val = random.nextInt(1, 101);
+                while (idSet.contains(val)) {
+                    val = random.nextInt(1, 101);
+                }
+                idSet.add(val);
+                String stmt = String.format(
+                    "insert into students1 values (%d, \'%s\', %s);",
+                    val, "test" + val,
+                    random.nextBoolean()
                 );
+                OLSQLBase insertTuple = OLParsingMachine.parse(stmt);
                 insertTuple.execute(database, pool);
+                System.out.println(stmt);
             }
-            
-            for (int i = 1; i <= 2; i++)
-            {
-                OLSQLBase insertTuple = OLParsingMachine.parse(
-                    String.format(
-                        "insert into students2 values (%d, %d);", 
-                        i, random.nextInt(1, 13)
-                    )
-                );
-                insertTuple.execute(database, pool);
-            }
-
-            for (int i = 1; i <= 2; i++)
-            {
-                OLSQLBase insertTuple = OLParsingMachine.parse(
-                    String.format(
-                        "insert into students3 values (%d);", 
-                        i, random.nextInt(101)
-                    )
-                );
-                insertTuple.execute(database, pool);
-            }
-
 
             OLSQLBase stmt = OLParsingMachine.parse("select * from students1;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            stmt = OLParsingMachine.parse("select * from students2;");
+            // stmt = OLParsingMachine.parse("select * from students2;");
+            // stmt.execute(database, pool);
+            // System.out.println(stmt.getResult());
+
+            stmt = OLParsingMachine.parse("select * from students1;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
 
-            stmt = OLParsingMachine.parse("select * from students1, students3;");
+            stmt = OLParsingMachine.parse("select * from students1 order by id;");
             stmt.execute(database, pool);
             System.out.println(stmt.getResult());
-
-            stmt = OLParsingMachine.parse("select * from students1, students2, students3 where roll = 2;");
-            stmt.execute(database, pool);
-            System.out.println(stmt.getResult());
-        
         } finally {
             database.dropDatabase();
         }
