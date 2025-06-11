@@ -20,7 +20,7 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
     private @Getter String tableName;
     private Map<String, String> valueMap;
     private List<String> valueList;
-    private OLSQLResult result;
+    private @Getter OLSQLResult result;
     private String query;
 
     public OLInsertIntoTableSQL(String tableName, Map<String, String> valueMap, String query) {
@@ -33,11 +33,6 @@ public class OLInsertIntoTableSQL implements OLSQLBase {
         this.tableName = tableName;
         this.valueList = valueList;
         this.query = query;
-    }
-
-    @Override
-    public OLSQLResult getResult() {
-        throw new UnsupportedOperationException("Unimplemented method 'getResult'");
     }
 
     @Override
