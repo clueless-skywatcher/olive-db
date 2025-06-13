@@ -52,7 +52,7 @@ public class OLSelectFromTableSQL implements OLSQLBase {
             scan.next();
         }
         this.result = result;
-        System.out.println(scan.toString());
+        // System.out.println(scan.toString());
     }
 
     public String toString() {
